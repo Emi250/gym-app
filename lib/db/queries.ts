@@ -245,6 +245,7 @@ export async function addPlannedExercise(input: AddPlannedExerciseInput): Promis
     target_weight_kg: input.target_weight_kg,
     target_rir: input.target_rir,
     rest_seconds: null,
+    is_bodyweight: false,
     notes: null,
     created_at: now,
     updated_at: now,
@@ -267,6 +268,7 @@ export async function updatePlannedExercise(
       | "target_weight_kg"
       | "target_rir"
       | "rest_seconds"
+      | "is_bodyweight"
       | "notes"
     >
   >,

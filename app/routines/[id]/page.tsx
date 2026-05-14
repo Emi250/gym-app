@@ -23,6 +23,7 @@ import {
   useExercises,
   useRoutine,
 } from "@/lib/db/queries";
+import { showToast } from "@/lib/toast/toast-store";
 import type { LocalExercise, LocalPlannedExercise, LocalTrainingDay } from "@/lib/db/types";
 
 export default function EditRoutinePage() {
@@ -88,7 +89,10 @@ export default function EditRoutinePage() {
             <h2 className="text-sm font-semibold uppercase tracking-wide">Días de entrenamiento</h2>
             <button
               type="button"
-              onClick={() => void addTrainingDay(routine.id, defaultDayName(days.length))}
+              onClick={async () => {
+                await addTrainingDay(routine.id, defaultDayName(days.length));
+                showToast("Día agregado", "success");
+              }}
               className="text-accent flex items-center gap-1 text-sm font-medium"
             >
               <Plus className="h-4 w-4" /> Agregar día
@@ -129,6 +133,12 @@ export default function EditRoutinePage() {
       </div>
     </AppShell>
   );
+}
+
+function formatWeightLabel(weight_kg: number, bodyweight: boolean): string {
+  if (!bodyweight) return `${weight_kg} kg`;
+  if (weight_kg === 0) return "Peso corporal";
+  return `Peso corporal + ${weight_kg} kg`;
 }
 
 function defaultDayName(count: number): string {
@@ -208,8 +218,8 @@ function DayEditor({
       <ExercisePicker
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
-        onPick={(ex) =>
-          void addPlannedExercise({
+        onPick={async (ex) => {
+          await addPlannedExercise({
             training_day_id: day.id,
             exercise_id: ex.id,
             target_sets: 3,
@@ -217,8 +227,9 @@ function DayEditor({
             target_reps_max: 12,
             target_weight_kg: 20,
             target_rir: null,
-          })
-        }
+          });
+          showToast(`${ex.name} agregado`, "success");
+        }}
       />
     </div>
   );
@@ -248,7 +259,7 @@ function PlannedExerciseRow({
             <span className="block font-medium">{exerciseName}</span>
             <span className="text-fg-muted text-xs">
               {planned.target_sets}×{planned.target_reps_min}–{planned.target_reps_max} reps ·{" "}
-              {planned.target_weight_kg} kg
+              {formatWeightLabel(planned.target_weight_kg, planned.is_bodyweight)}
               {planned.target_rir != null ? ` · RIR ${planned.target_rir}` : ""}
             </span>
           </span>
@@ -258,6 +269,26 @@ function PlannedExerciseRow({
 
       {expanded ? (
         <div className="border-border space-y-4 border-t p-4">
+          <label className="bg-bg-elevated border-border flex h-12 items-center justify-between rounded-xl border px-3">
+            <span className="text-sm font-medium">
+              Peso corporal
+              <span className="text-fg-muted ml-2 text-xs font-normal">
+                (dominadas, fondos, etc)
+              </span>
+            </span>
+            <input
+              type="checkbox"
+              checked={planned.is_bodyweight}
+              onChange={(e) =>
+                void updatePlannedExercise(planned.id, {
+                  is_bodyweight: e.target.checked,
+                  // When switching to bodyweight, reset extra weight to 0.
+                  target_weight_kg: e.target.checked ? 0 : planned.target_weight_kg,
+                })
+              }
+              className="h-5 w-5 accent-green-500"
+            />
+          </label>
           <div className="grid grid-cols-2 gap-3">
             <NumberStepper
               label="Series"
@@ -267,7 +298,7 @@ function PlannedExerciseRow({
               max={10}
             />
             <NumberStepper
-              label="Peso"
+              label={planned.is_bodyweight ? "Peso extra" : "Peso"}
               value={planned.target_weight_kg}
               onChange={(v) => void updatePlannedExercise(planned.id, { target_weight_kg: v })}
               step={0.5}

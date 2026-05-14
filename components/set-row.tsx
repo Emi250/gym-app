@@ -5,6 +5,7 @@ import { useState } from "react";
 import { startRestTimer } from "@/components/rest-timer";
 import { NumberStepper } from "@/components/ui/number-stepper";
 import { softDeleteSet, upsertSet } from "@/lib/db/session-queries";
+import { showToast } from "@/lib/toast/toast-store";
 import { cn } from "@/lib/utils/cn";
 
 interface ExistingSet {
@@ -124,6 +125,7 @@ export function SetRow({
               rir,
             });
             setEditing(false);
+            showToast(isNew ? `Serie ${set_number} guardada` : "Cambios guardados", "success");
             // Only start the timer for a freshly logged set, not an edit.
             if (isNew && rest_seconds && rest_seconds > 0) {
               startRestTimer(rest_seconds);

@@ -110,6 +110,7 @@ export async function startSession(input: StartSessionInput): Promise<string> {
       target_weight_kg: p.target_weight_kg,
       target_rir: p.target_rir,
       rest_seconds: p.rest_seconds,
+      is_bodyweight: p.is_bodyweight,
       created_at: now,
       updated_at: now,
       deleted_at: null,

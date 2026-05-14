@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import { useExercises } from "@/lib/db/queries";
 import { cn } from "@/lib/utils/cn";
+import { stripDiacritics } from "@/lib/utils/text";
 import type { LocalExercise, MuscleGroup } from "@/lib/db/types";
 
 const MUSCLE_LABEL: Record<MuscleGroup, string> = {
@@ -39,11 +40,26 @@ export function ExercisePicker({ open, onClose, onPick }: ExercisePickerProps) {
 
   const visible = useMemo(() => {
     if (!exercises) return [];
-    const q = query.trim().toLowerCase();
-    return exercises.filter((e) => {
+    // Deduplicate by normalized name. When the catalog was seeded locally before
+    // auth and then again pulled from Supabase, the same exercise can show up
+    // twice with different ids. Prefer the global catalog (user_id === null)
+    // because those are stable across devices.
+    const byKey = new Map<string, LocalExercise>();
+    for (const e of exercises) {
+      const key = `${e.muscle_group}::${stripDiacritics(e.name)}`;
+      const existing = byKey.get(key);
+      if (!existing) {
+        byKey.set(key, e);
+      } else if (existing.user_id !== null && e.user_id === null) {
+        byKey.set(key, e);
+      }
+    }
+    const deduped = Array.from(byKey.values());
+    const q = stripDiacritics(query.trim());
+    return deduped.filter((e) => {
       if (filter && e.muscle_group !== filter) return false;
       if (!q) return true;
-      return e.name.toLowerCase().includes(q);
+      return stripDiacritics(e.name).includes(q);
     });
   }, [exercises, query, filter]);
 

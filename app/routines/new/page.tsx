@@ -6,6 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { BigButton } from "@/components/ui/big-button";
 import { useCurrentUserId } from "@/lib/auth/current-user";
 import { createRoutine } from "@/lib/db/queries";
+import { showToast } from "@/lib/toast/toast-store";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -29,6 +30,7 @@ export default function NewRoutinePage() {
         started_at: startedAt ? new Date(startedAt).toISOString() : null,
         activate,
       });
+      showToast(`Rutina "${name.trim()}" creada`, "success");
       router.replace(`/routines/${id}`);
     } finally {
       setSaving(false);

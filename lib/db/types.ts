@@ -68,10 +68,13 @@ export interface PlannedExercise extends SyncFields {
   target_sets: number;
   target_reps_min: number;
   target_reps_max: number;
+  /** When `is_bodyweight = true`, this represents EXTRA weight (e.g. dip belt). */
   target_weight_kg: number;
   target_rir: number | null;
   /** Seconds the timer counts down between sets. Null = no auto timer. */
   rest_seconds: number | null;
+  /** True for exercises trained against the user's own bodyweight. */
+  is_bodyweight: boolean;
   notes: string | null;
   created_at: Iso;
 }
@@ -99,6 +102,7 @@ export interface SessionExercise extends SyncFields {
   target_weight_kg: number;
   target_rir: number | null;
   rest_seconds: number | null;
+  is_bodyweight: boolean;
   created_at: Iso;
 }
 

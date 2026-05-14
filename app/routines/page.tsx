@@ -5,6 +5,7 @@ import { Archive, CheckCircle2, Circle, Plus } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { BigButton } from "@/components/ui/big-button";
 import { activateRoutine, useRoutines } from "@/lib/db/queries";
+import { showToast } from "@/lib/toast/toast-store";
 import { routineDurationLabel } from "@/lib/utils/routine-time";
 import type { LocalRoutine } from "@/lib/db/types";
 
@@ -131,8 +132,10 @@ function ActivateButton({
       type="button"
       aria-label={active ? "Rutina activa" : "Activar rutina"}
       disabled={disabled}
-      onClick={() => {
-        if (!active && !disabled) void activateRoutine(routineId);
+      onClick={async () => {
+        if (active || disabled) return;
+        await activateRoutine(routineId);
+        showToast("Rutina activada", "success");
       }}
       className="text-fg-muted disabled:opacity-30"
     >

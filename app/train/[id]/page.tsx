@@ -145,6 +145,12 @@ export default function LiveSessionPage() {
   );
 }
 
+function formatWeight(weight_kg: number, bodyweight: boolean): string {
+  if (!bodyweight) return `${weight_kg} kg`;
+  if (weight_kg === 0) return "Peso corporal";
+  return `Peso corporal + ${weight_kg} kg`;
+}
+
 function fmtRelativeDate(iso: string): string {
   // Display absolute short date; avoids Date.now() during render (React 19 purity lint).
   return new Date(iso).toLocaleDateString("es", { day: "2-digit", month: "short" });
@@ -171,10 +177,17 @@ function ExerciseBlock({
   return (
     <section className="bg-bg-elevated border-border rounded-2xl border p-4">
       <header className="mb-3">
-        <h3 className="text-base font-semibold">{session_exercise.exercise_name}</h3>
+        <h3 className="text-base font-semibold">
+          {session_exercise.exercise_name}
+          {session_exercise.is_bodyweight ? (
+            <span className="bg-accent/15 text-accent ml-2 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase">
+              BW
+            </span>
+          ) : null}
+        </h3>
         <p className="text-fg-muted text-xs">
           Objetivo: {session_exercise.target_reps_min}–{session_exercise.target_reps_max} reps ·{" "}
-          {session_exercise.target_weight_kg} kg
+          {formatWeight(session_exercise.target_weight_kg, session_exercise.is_bodyweight)}
           {session_exercise.target_rir != null ? ` · RIR ${session_exercise.target_rir}` : ""}
         </p>
         {last ? (

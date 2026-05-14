@@ -1,7 +1,7 @@
 "use client";
 
 import { Minus, Plus } from "lucide-react";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils/cn";
 
 export interface NumberStepperProps {
@@ -18,8 +18,9 @@ export interface NumberStepperProps {
 }
 
 /**
- * Large touch-friendly number input with +/- steppers on each side.
- * Designed for gym use — minimum 56px tall, big targets, no native arrows.
+ * Large touch-friendly number input with +/- steppers on each side and a
+ * tappable centre. Tapping the centre opens the OS numeric keyboard so the
+ * user can type a value directly instead of stepping it up many times.
  */
 export function NumberStepper({
   value,
@@ -34,19 +35,31 @@ export function NumberStepper({
 }: NumberStepperProps) {
   const clamp = useCallback(
     (n: number) => {
-      let out = n;
+      let out = Number.isFinite(n) ? n : 0;
       if (typeof min === "number") out = Math.max(min, out);
       if (typeof max === "number") out = Math.min(max, out);
-      // Avoid float dust from repeated 0.5 increments
       return Number(out.toFixed(decimals === 0 ? 0 : Math.max(decimals, 2)));
     },
     [min, max, decimals],
   );
 
+  const formatted = decimals === 0 ? value.toString() : value.toFixed(decimals);
+  // While editing, we render `draft` (the user's typed text). When not editing,
+  // we render the external `formatted` value directly — no effect needed.
+  const [draft, setDraft] = useState<string>(formatted);
+  const [editing, setEditing] = useState(false);
+  const displayValue = editing ? draft : formatted;
+
+  const commit = () => {
+    setEditing(false);
+    if (draft.trim() === "") return;
+    const parsed = Number(draft.replace(",", "."));
+    if (!Number.isFinite(parsed)) return;
+    onChange(clamp(parsed));
+  };
+
   const inc = () => onChange(clamp(value + step));
   const dec = () => onChange(clamp(value - step));
-
-  const formatted = decimals === 0 ? value.toString() : value.toFixed(decimals);
 
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
@@ -62,9 +75,35 @@ export function NumberStepper({
         >
           <Minus className="h-6 w-6" />
         </button>
-        <div className="flex flex-1 items-center justify-center gap-1 text-center">
-          <span className="text-2xl font-bold tabular-nums">{formatted}</span>
-          {suffix ? <span className="text-fg-muted text-sm">{suffix}</span> : null}
+        <div className="relative flex flex-1 items-center justify-center gap-1 text-center">
+          <input
+            type="text"
+            inputMode={decimals === 0 ? "numeric" : "decimal"}
+            pattern={decimals === 0 ? "[0-9]*" : "[0-9.,]*"}
+            value={displayValue}
+            onFocus={(e) => {
+              setDraft(formatted);
+              setEditing(true);
+              e.currentTarget.select();
+            }}
+            onChange={(e) => setDraft(e.currentTarget.value)}
+            onBlur={commit}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.currentTarget.blur();
+              } else if (e.key === "Escape") {
+                setEditing(false);
+                e.currentTarget.blur();
+              }
+            }}
+            aria-label={label ?? "Valor"}
+            className="w-full bg-transparent text-center text-2xl font-bold tabular-nums outline-none focus:ring-0"
+          />
+          {suffix ? (
+            <span className="text-fg-muted pointer-events-none absolute right-2 text-sm">
+              {suffix}
+            </span>
+          ) : null}
         </div>
         <button
           type="button"

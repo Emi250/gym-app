@@ -5,6 +5,7 @@ import { DbProvider } from "@/components/db-provider";
 import { RestTimer } from "@/components/rest-timer";
 import { ServiceWorkerRegistrar } from "@/components/sw-registrar";
 import { SyncManager } from "@/components/sync-manager";
+import { ToastContainer } from "@/components/toast-container";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -56,6 +57,7 @@ export default function RootLayout({
           <AuthGate>{children}</AuthGate>
           <SyncManager />
           <RestTimer />
+          <ToastContainer />
         </DbProvider>
         <ServiceWorkerRegistrar />
       </body>
