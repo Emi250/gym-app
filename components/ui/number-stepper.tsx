@@ -21,6 +21,10 @@ export interface NumberStepperProps {
  * Large touch-friendly number input with +/- steppers on each side and a
  * tappable centre. Tapping the centre opens the OS numeric keyboard so the
  * user can type a value directly instead of stepping it up many times.
+ *
+ * Layout: the input is sized to its content via `size`, with the suffix as
+ * an inline sibling. The whole "value · suffix" pair is centred between the
+ * stepper buttons.
  */
 export function NumberStepper({
   value,
@@ -44,11 +48,10 @@ export function NumberStepper({
   );
 
   const formatted = decimals === 0 ? value.toString() : value.toFixed(decimals);
-  // While editing, we render `draft` (the user's typed text). When not editing,
-  // we render the external `formatted` value directly — no effect needed.
   const [draft, setDraft] = useState<string>(formatted);
   const [editing, setEditing] = useState(false);
   const displayValue = editing ? draft : formatted;
+  const inputSize = Math.max(2, displayValue.length);
 
   const commit = () => {
     setEditing(false);
@@ -62,25 +65,26 @@ export function NumberStepper({
   const dec = () => onChange(clamp(value - step));
 
   return (
-    <div className={cn("flex flex-col gap-1.5", className)}>
+    <div className={cn("flex min-w-0 flex-col gap-1.5", className)}>
       {label ? (
         <span className="text-fg-muted text-xs font-medium uppercase tracking-wide">{label}</span>
       ) : null}
-      <div className="bg-bg-elevated border-border flex h-16 items-stretch overflow-hidden rounded-2xl border">
+      <div className="bg-bg-elevated border-border flex h-16 min-w-0 items-stretch overflow-hidden rounded-2xl border">
         <button
           type="button"
           onClick={dec}
           aria-label={`Restar ${step}`}
-          className="text-fg-muted hover:text-fg active:bg-bg-elevated-2 flex w-16 items-center justify-center"
+          className="text-fg-muted hover:text-fg active:bg-bg-elevated-2 flex h-full w-12 shrink-0 items-center justify-center"
         >
-          <Minus className="h-6 w-6" />
+          <Minus className="h-5 w-5" />
         </button>
-        <div className="relative flex flex-1 items-center justify-center gap-1 text-center">
+        <div className="flex min-w-0 flex-1 items-baseline justify-center gap-1 overflow-hidden px-1">
           <input
             type="text"
             inputMode={decimals === 0 ? "numeric" : "decimal"}
             pattern={decimals === 0 ? "[0-9]*" : "[0-9.,]*"}
             value={displayValue}
+            size={inputSize}
             onFocus={(e) => {
               setDraft(formatted);
               setEditing(true);
@@ -97,21 +101,19 @@ export function NumberStepper({
               }
             }}
             aria-label={label ?? "Valor"}
-            className="caret-transparent w-full bg-transparent text-center text-2xl font-bold tabular-nums outline-none selection:bg-accent/30 focus:ring-0"
+            className="caret-transparent max-w-full bg-transparent text-center text-2xl font-bold tabular-nums outline-none selection:bg-accent/30 focus:ring-0"
           />
           {suffix ? (
-            <span className="text-fg-muted pointer-events-none absolute right-2 text-sm">
-              {suffix}
-            </span>
+            <span className="text-fg-muted shrink-0 text-sm">{suffix}</span>
           ) : null}
         </div>
         <button
           type="button"
           onClick={inc}
           aria-label={`Sumar ${step}`}
-          className="text-fg-muted hover:text-fg active:bg-bg-elevated-2 flex w-16 items-center justify-center"
+          className="text-fg-muted hover:text-fg active:bg-bg-elevated-2 flex h-full w-12 shrink-0 items-center justify-center"
         >
-          <Plus className="h-6 w-6" />
+          <Plus className="h-5 w-5" />
         </button>
       </div>
     </div>

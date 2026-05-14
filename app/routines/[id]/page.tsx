@@ -367,18 +367,19 @@ function RestField({ planned }: { planned: LocalPlannedExercise }) {
       </label>
       {enabled ? (
         <div className="flex items-end gap-3">
-          <div className="bg-bg-elevated border-border flex h-14 flex-1 items-center justify-center rounded-2xl border text-xl font-bold tabular-nums">
+          <div className="bg-bg-elevated border-border flex h-14 w-20 shrink-0 items-center justify-center rounded-2xl border text-xl font-bold tabular-nums">
             {display}
           </div>
-          <NumberStepper
-            value={seconds}
-            onChange={(v) => void updatePlannedExercise(planned.id, { rest_seconds: v })}
-            step={15}
-            min={15}
-            max={600}
-            suffix="s"
-            className="w-40"
-          />
+          <div className="min-w-0 flex-1">
+            <NumberStepper
+              value={seconds}
+              onChange={(v) => void updatePlannedExercise(planned.id, { rest_seconds: v })}
+              step={15}
+              min={15}
+              max={600}
+              suffix="s"
+            />
+          </div>
         </div>
       ) : null}
     </div>
@@ -408,7 +409,6 @@ function RirField({ planned }: { planned: LocalPlannedExercise }) {
           onChange={(v) => void updatePlannedExercise(planned.id, { target_rir: v })}
           min={0}
           max={5}
-          className="w-32"
         />
       ) : null}
     </div>
