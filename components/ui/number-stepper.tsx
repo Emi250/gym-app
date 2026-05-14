@@ -69,7 +69,7 @@ export function NumberStepper({
       {label ? (
         <span className="text-fg-muted text-xs font-medium uppercase tracking-wide">{label}</span>
       ) : null}
-      <div className="bg-bg-elevated border-border flex h-16 min-w-0 items-stretch overflow-hidden rounded-2xl border">
+      <div className="bg-bg-elevated border-border flex h-16 min-w-0 items-stretch rounded-2xl border">
         <button
           type="button"
           onClick={dec}
@@ -78,7 +78,7 @@ export function NumberStepper({
         >
           <Minus className="h-5 w-5" />
         </button>
-        <div className="flex min-w-0 flex-1 items-baseline justify-center gap-1 overflow-hidden px-1">
+        <div className="flex min-w-0 flex-1 items-baseline justify-center gap-1 px-1">
           <input
             type="text"
             inputMode={decimals === 0 ? "numeric" : "decimal"}

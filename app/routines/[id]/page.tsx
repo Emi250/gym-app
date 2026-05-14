@@ -389,8 +389,8 @@ function RestField({ planned }: { planned: LocalPlannedExercise }) {
 function RirField({ planned }: { planned: LocalPlannedExercise }) {
   const enabled = planned.target_rir != null;
   return (
-    <div className="flex items-end gap-3">
-      <label className="bg-bg-elevated border-border flex h-12 flex-1 items-center justify-between rounded-xl border px-3">
+    <div className="flex flex-col gap-2">
+      <label className="bg-bg-elevated border-border flex h-12 items-center justify-between rounded-xl border px-3">
         <span className="text-sm font-medium">RIR objetivo (opcional)</span>
         <input
           type="checkbox"
