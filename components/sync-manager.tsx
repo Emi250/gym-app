@@ -5,6 +5,7 @@ import { useAuthState } from "@/lib/auth/current-user";
 import { migrateLocalDataToAuthenticatedUser } from "@/lib/auth/migrate-local-data";
 import { syncOnce } from "@/lib/sync/engine";
 import { syncStore } from "@/lib/sync/sync-store";
+import { errorMessage } from "@/lib/utils/errors";
 
 const POLL_MS = 30_000;
 
@@ -42,9 +43,8 @@ export function SyncManager() {
         }
       } catch (err) {
         if (cancelled) return;
-        const message = err instanceof Error ? err.message : String(err);
         console.error("Sync failed", err);
-        syncStore.set({ status: "error", errorMessage: message });
+        syncStore.set({ status: "error", errorMessage: errorMessage(err) });
       }
     };
 

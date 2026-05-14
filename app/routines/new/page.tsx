@@ -38,7 +38,7 @@ export default function NewRoutinePage() {
   }
 
   return (
-    <AppShell title="Nueva rutina">
+    <AppShell title="Nueva rutina" back="/routines">
       <form
         className="flex flex-col gap-5"
         onSubmit={(e) => {

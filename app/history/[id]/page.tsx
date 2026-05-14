@@ -1,7 +1,5 @@
 "use client";
 
-import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { useSessionDetail } from "@/lib/db/history-queries";
@@ -37,14 +35,7 @@ export default function SessionDetailPage() {
   const { session, sExercises, sets } = data;
 
   return (
-    <AppShell
-      title={session.training_day_name}
-      topRight={
-        <Link href="/history" aria-label="Volver" className="text-fg-muted hover:text-fg p-2">
-          <ChevronLeft className="h-5 w-5" />
-        </Link>
-      }
-    >
+    <AppShell title={session.training_day_name} back="/history">
       <div className="flex flex-col gap-5">
         <div className="bg-bg-elevated border-border rounded-2xl border p-4">
           <p className="text-fg-muted text-xs uppercase tracking-wide">Fecha</p>

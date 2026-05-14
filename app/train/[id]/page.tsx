@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronLeft, Flag, Trash2 } from "lucide-react";
+import { Check, Flag, Trash2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
@@ -67,19 +67,7 @@ export default function LiveSessionPage() {
   }
 
   return (
-    <AppShell
-      title={session.training_day_name}
-      topRight={
-        <button
-          type="button"
-          aria-label="Volver"
-          onClick={() => router.push("/train")}
-          className="text-fg-muted hover:text-fg p-2"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-      }
-    >
+    <AppShell title={session.training_day_name} back="/train">
       <div className="flex flex-col gap-5">
         {totals ? (
           <div className="bg-bg-elevated border-border rounded-2xl border p-4">

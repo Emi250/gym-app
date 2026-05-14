@@ -3,6 +3,7 @@
 import { Settings } from "lucide-react";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
+import { SyncBadge } from "@/components/sync-badge";
 import { BigButton } from "@/components/ui/big-button";
 import { useRoutines } from "@/lib/db/queries";
 import { useFinishedSessions } from "@/lib/db/history-queries";
@@ -18,9 +19,16 @@ export default function Home() {
     <AppShell
       title="Gym Tracker"
       topRight={
-        <Link href="/settings" aria-label="Ajustes" className="text-fg-muted hover:text-fg p-2">
-          <Settings className="h-5 w-5" />
-        </Link>
+        <div className="flex items-center gap-1">
+          <SyncBadge />
+          <Link
+            href="/settings"
+            aria-label="Ajustes"
+            className="text-fg-muted hover:bg-bg-elevated flex h-9 w-9 items-center justify-center rounded-full"
+          >
+            <Settings className="h-4 w-4" />
+          </Link>
+        </div>
       }
     >
       <div className="flex flex-col gap-6">

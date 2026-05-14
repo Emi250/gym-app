@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -54,14 +54,7 @@ export default function EditRoutinePage() {
   const startedAtInput = routine.started_at ? routine.started_at.slice(0, 10) : "";
 
   return (
-    <AppShell
-      title="Editar rutina"
-      topRight={
-        <Link href="/routines" aria-label="Volver" className="text-fg-muted hover:text-fg p-2">
-          <ChevronLeft className="h-5 w-5" />
-        </Link>
-      }
-    >
+    <AppShell title="Editar rutina" back="/routines">
       <div className="flex flex-col gap-6">
         <Field label="Nombre">
           <input

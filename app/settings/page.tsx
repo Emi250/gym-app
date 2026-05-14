@@ -33,7 +33,7 @@ export default function SettingsPage() {
   const [signingOut, setSigningOut] = useState(false);
 
   return (
-    <AppShell title="Ajustes">
+    <AppShell title="Ajustes" back="/">
       <div className="flex flex-col gap-3">
         <Section label="Cuenta">
           <p className="font-medium">{user?.email ?? "—"}</p>
