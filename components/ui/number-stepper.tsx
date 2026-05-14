@@ -97,7 +97,7 @@ export function NumberStepper({
               }
             }}
             aria-label={label ?? "Valor"}
-            className="w-full bg-transparent text-center text-2xl font-bold tabular-nums outline-none focus:ring-0"
+            className="caret-transparent w-full bg-transparent text-center text-2xl font-bold tabular-nums outline-none selection:bg-accent/30 focus:ring-0"
           />
           {suffix ? (
             <span className="text-fg-muted pointer-events-none absolute right-2 text-sm">
