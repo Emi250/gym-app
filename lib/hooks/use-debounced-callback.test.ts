@@ -29,4 +29,13 @@ describe("useDebouncedCallback", () => {
     vi.advanceTimersByTime(100);
     expect(fn).toHaveBeenCalledExactlyOnceWith("y");
   });
+
+  it("cancels a pending callback when the component unmounts", () => {
+    const fn = vi.fn();
+    const { result, unmount } = renderHook(() => useDebouncedCallback(fn, 300));
+    result.current("z");
+    unmount();
+    vi.advanceTimersByTime(300);
+    expect(fn).not.toHaveBeenCalled();
+  });
 });
