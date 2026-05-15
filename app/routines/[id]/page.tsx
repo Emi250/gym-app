@@ -1,14 +1,19 @@
 "use client";
 
-import { Plus, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { DragHandle, SortableList } from "@/components/sortable-list";
 import { BigButton } from "@/components/ui/big-button";
+import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ExercisePicker } from "@/components/ui/exercise-picker";
+import { Field, Input } from "@/components/ui/field";
 import { NumberStepper } from "@/components/ui/number-stepper";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 import {
   addPlannedExercise,
   addTrainingDay,
@@ -31,11 +36,12 @@ export default function EditRoutinePage() {
   const router = useRouter();
   const data = useRoutine(params.id);
   const exercises = useExercises();
+  const [confirmDeleteRoutine, setConfirmDeleteRoutine] = useState(false);
 
   if (data === undefined) {
     return (
       <AppShell title="Cargando…">
-        <div className="bg-bg-elevated h-32 animate-pulse rounded-2xl" />
+        <Skeleton className="h-32" />
       </AppShell>
     );
   }
@@ -57,15 +63,14 @@ export default function EditRoutinePage() {
     <AppShell title="Editar rutina" back="/routines">
       <div className="flex flex-col gap-6">
         <Field label="Nombre">
-          <input
+          <Input
             value={routine.name}
             onChange={(e) => void updateRoutine(routine.id, { name: e.target.value })}
-            className="bg-bg-elevated border-border h-14 w-full rounded-2xl border px-4 text-base outline-none focus:ring-2 focus:ring-white/20"
           />
         </Field>
 
         <Field label="Fecha de inicio">
-          <input
+          <Input
             type="date"
             value={startedAtInput}
             onChange={(e) =>
@@ -73,7 +78,6 @@ export default function EditRoutinePage() {
                 started_at: e.target.value ? new Date(e.target.value).toISOString() : null,
               })
             }
-            className="bg-bg-elevated border-border h-14 w-full rounded-2xl border px-4 text-base outline-none focus:ring-2 focus:ring-white/20"
           />
         </Field>
 
@@ -115,15 +119,23 @@ export default function EditRoutinePage() {
         <BigButton
           variant="danger"
           size="md"
-          onClick={() => {
-            if (confirm("¿Eliminar esta rutina?")) {
-              void softDeleteRoutine(routine.id).then(() => router.replace("/routines"));
-            }
-          }}
+          onClick={() => setConfirmDeleteRoutine(true)}
         >
           Eliminar rutina
         </BigButton>
       </div>
+      <ConfirmDialog
+        open={confirmDeleteRoutine}
+        title="Eliminar rutina"
+        description="La rutina se elimina permanentemente."
+        confirmLabel="Eliminar"
+        destructive
+        onConfirm={() => {
+          setConfirmDeleteRoutine(false);
+          void softDeleteRoutine(routine.id).then(() => router.replace("/routines"));
+        }}
+        onCancel={() => setConfirmDeleteRoutine(false)}
+      />
     </AppShell>
   );
 }
@@ -151,6 +163,7 @@ function DayEditor({
   dragHandle?: React.ReactNode;
 }) {
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [confirmDeleteDay, setConfirmDeleteDay] = useState(false);
   const exerciseById = useMemo(
     () => new Map(exercises.map((e) => [e.id, e])),
     [exercises],
@@ -161,7 +174,7 @@ function DayEditor({
   );
 
   return (
-    <div className="bg-bg-elevated border-border rounded-2xl border p-4">
+    <Card padding="md">
       <div className="flex items-center gap-2">
         {dragHandle}
         <input
@@ -172,9 +185,7 @@ function DayEditor({
         />
         <button
           type="button"
-          onClick={() => {
-            if (confirm(`¿Eliminar "${day.name}"?`)) void softDeleteTrainingDay(day.id);
-          }}
+          onClick={() => setConfirmDeleteDay(true)}
           className="text-fg-muted hover:text-danger p-1"
           aria-label="Eliminar día"
         >
@@ -225,7 +236,20 @@ function DayEditor({
           showToast(`${ex.name} agregado`, "success");
         }}
       />
-    </div>
+
+      <ConfirmDialog
+        open={confirmDeleteDay}
+        title={`Eliminar "${day.name}"`}
+        description="Se elimina el día y sus ejercicios."
+        confirmLabel="Eliminar"
+        destructive
+        onConfirm={() => {
+          setConfirmDeleteDay(false);
+          void softDeleteTrainingDay(day.id);
+        }}
+        onCancel={() => setConfirmDeleteDay(false)}
+      />
+    </Card>
   );
 }
 
@@ -239,8 +263,10 @@ function PlannedExerciseRow({
   dragHandle?: React.ReactNode;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [confirmRemove, setConfirmRemove] = useState(false);
 
   return (
+    <>
     <div className="bg-bg border-border rounded-xl border">
       <div className="flex items-center">
         {dragHandle}
@@ -257,7 +283,13 @@ function PlannedExerciseRow({
               {planned.target_rir != null ? ` · RIR ${planned.target_rir}` : ""}
             </span>
           </span>
-          <span className="text-fg-muted text-xs">{expanded ? "−" : "Editar"}</span>
+          <span className="text-fg-muted">
+            {expanded ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
+          </span>
         </button>
       </div>
 
@@ -270,17 +302,14 @@ function PlannedExerciseRow({
                 (dominadas, fondos, etc)
               </span>
             </span>
-            <input
-              type="checkbox"
+            <Switch
               checked={planned.is_bodyweight}
-              onChange={(e) =>
+              onCheckedChange={(checked) =>
                 void updatePlannedExercise(planned.id, {
-                  is_bodyweight: e.target.checked,
-                  // When switching to bodyweight, reset extra weight to 0.
-                  target_weight_kg: e.target.checked ? 0 : planned.target_weight_kg,
+                  is_bodyweight: checked,
+                  target_weight_kg: checked ? 0 : planned.target_weight_kg,
                 })
               }
-              className="h-5 w-5 accent-green-500"
             />
           </label>
           <div className="grid grid-cols-2 gap-3">
@@ -330,10 +359,7 @@ function PlannedExerciseRow({
 
           <button
             type="button"
-            onClick={() => {
-              if (confirm("¿Quitar este ejercicio del día?"))
-                void softDeletePlannedExercise(planned.id);
-            }}
+            onClick={() => setConfirmRemove(true)}
             className="text-danger flex h-10 items-center gap-1 text-sm font-medium"
           >
             <Trash2 className="h-4 w-4" /> Quitar ejercicio
@@ -341,6 +367,19 @@ function PlannedExerciseRow({
         </div>
       ) : null}
     </div>
+      <ConfirmDialog
+        open={confirmRemove}
+        title="Quitar ejercicio"
+        description="Se quita este ejercicio del día."
+        confirmLabel="Quitar"
+        destructive
+        onConfirm={() => {
+          setConfirmRemove(false);
+          void softDeletePlannedExercise(planned.id);
+        }}
+        onCancel={() => setConfirmRemove(false)}
+      />
+    </>
   );
 }
 
@@ -355,15 +394,13 @@ function RestField({ planned }: { planned: LocalPlannedExercise }) {
     <div className="flex flex-col gap-2">
       <label className="bg-bg-elevated border-border flex h-12 items-center justify-between rounded-xl border px-3">
         <span className="text-sm font-medium">Timer de descanso (opcional)</span>
-        <input
-          type="checkbox"
+        <Switch
           checked={enabled}
-          onChange={(e) =>
+          onCheckedChange={(checked) =>
             void updatePlannedExercise(planned.id, {
-              rest_seconds: e.target.checked ? 90 : null,
+              rest_seconds: checked ? 90 : null,
             })
           }
-          className="h-5 w-5 accent-green-500"
         />
       </label>
       {enabled ? (
@@ -393,15 +430,13 @@ function RirField({ planned }: { planned: LocalPlannedExercise }) {
     <div className="flex flex-col gap-2">
       <label className="bg-bg-elevated border-border flex h-12 items-center justify-between rounded-xl border px-3">
         <span className="text-sm font-medium">RIR objetivo (opcional)</span>
-        <input
-          type="checkbox"
+        <Switch
           checked={enabled}
-          onChange={(e) =>
+          onCheckedChange={(checked) =>
             void updatePlannedExercise(planned.id, {
-              target_rir: e.target.checked ? 2 : null,
+              target_rir: checked ? 2 : null,
             })
           }
-          className="h-5 w-5 accent-green-500"
         />
       </label>
       {enabled ? (
@@ -412,15 +447,6 @@ function RirField({ planned }: { planned: LocalPlannedExercise }) {
           max={5}
         />
       ) : null}
-    </div>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <span className="text-fg-muted text-xs font-medium uppercase tracking-wide">{label}</span>
-      {children}
     </div>
   );
 }
