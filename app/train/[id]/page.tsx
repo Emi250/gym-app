@@ -13,6 +13,7 @@ import {
   useSession,
 } from "@/lib/db/session-queries";
 import { applyProgressionToSession } from "@/lib/progression/apply";
+import { showToast } from "@/lib/toast/toast-store";
 
 export default function LiveSessionPage() {
   const params = useParams<{ id: string }>();
@@ -105,6 +106,8 @@ export default function LiveSessionPage() {
                 await applyProgressionToSession(session.id);
                 await markSessionFinished(session.id);
                 router.replace(`/train/${session.id}/finish`);
+              } catch {
+                showToast("No se pudo terminar la sesión", "error");
               } finally {
                 setFinishing(false);
               }
@@ -154,10 +157,8 @@ function ExerciseBlock({
   session_id: string;
 }) {
   const setsBySetNumber = new Map(sets.map((s) => [s.set_number, s]));
-  // We don't know exactly target_sets for this session_exercise; mirror the spec
-  // and default to 3 unless the user logged more (allow extra sets organically).
   const performed = sets.length;
-  const planned = 3;
+  const planned = session_exercise.target_sets;
   const totalToShow = Math.max(planned, performed + 1);
   const allDone = performed >= planned;
   const last = useLastPerformance(session_exercise.exercise_id, session_id);

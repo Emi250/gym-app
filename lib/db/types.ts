@@ -97,6 +97,7 @@ export interface SessionExercise extends SyncFields {
   exercise_id: Uuid;
   exercise_name: string;
   position: number;
+  target_sets: number;
   target_reps_min: number;
   target_reps_max: number;
   target_weight_kg: number;

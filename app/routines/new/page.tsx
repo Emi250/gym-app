@@ -32,6 +32,8 @@ export default function NewRoutinePage() {
       });
       showToast(`Rutina "${name.trim()}" creada`, "success");
       router.replace(`/routines/${id}`);
+    } catch {
+      showToast("No se pudo crear la rutina", "error");
     } finally {
       setSaving(false);
     }
