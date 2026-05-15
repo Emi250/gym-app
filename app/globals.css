@@ -16,6 +16,16 @@
   --shadow-overlay: 0 8px 32px rgb(0 0 0 / 0.6);
   --radius-control: 0.75rem;
   --radius-card: 1rem;
+  --animate-fade-in: fade-in 0.18s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @utility pt-safe {

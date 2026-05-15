@@ -1,5 +1,6 @@
 "use client";
 
+import { Dumbbell } from "lucide-react";
 import { useState } from "react";
 import { signInWithGoogle } from "@/lib/auth/current-user";
 import { showToast } from "@/lib/toast/toast-store";
@@ -9,8 +10,8 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-svh flex-col items-center justify-center gap-8 px-6 text-center">
       <div className="flex flex-col items-center gap-3">
-        <div className="bg-accent/15 text-accent flex h-16 w-16 items-center justify-center rounded-2xl text-3xl">
-          🏋️
+        <div className="bg-accent/15 text-accent flex h-16 w-16 items-center justify-center rounded-2xl">
+          <Dumbbell className="h-8 w-8" />
         </div>
         <h1 className="text-3xl font-bold tracking-tight">Gym Tracker</h1>
         <p className="text-fg-muted max-w-xs text-sm">

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Dumbbell, Flag, Trash2 } from "lucide-react";
+import { Check, ChevronDown, Dumbbell, Flag, Trash2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
@@ -186,7 +186,7 @@ function formatWeight(weight_kg: number, bodyweight: boolean): string {
   return `Peso corporal + ${weight_kg} kg`;
 }
 
-function fmtRelativeDate(iso: string): string {
+function fmtShortDate(iso: string): string {
   // Display absolute short date; avoids Date.now() during render (React 19 purity lint).
   return new Date(iso).toLocaleDateString("es", { day: "2-digit", month: "short" });
 }
@@ -206,6 +206,8 @@ function ExerciseBlock({
   const totalToShow = Math.max(planned, performed + 1);
   const allDone = performed >= planned;
   const last = useLastPerformance(session_exercise.exercise_id, session_id);
+  const [expanded, setExpanded] = useState(false);
+  const collapsed = allDone && !expanded;
 
   return (
     <Card padding="md">
@@ -225,7 +227,7 @@ function ExerciseBlock({
         </p>
         {last ? (
           <p className="text-fg-muted mt-1 text-xs">
-            Última vez ({fmtRelativeDate(last.finished_at)}):{" "}
+            Última vez ({fmtShortDate(last.finished_at)}):{" "}
             <span className="text-fg/80 tabular-nums">
               {last.sets
                 .map((s) => `${s.weight_kg}×${s.reps}`)
@@ -235,39 +237,57 @@ function ExerciseBlock({
         ) : null}
       </header>
 
-      <ul className="flex flex-col gap-2">
-        {Array.from({ length: totalToShow }, (_, i) => i + 1).map((n) => {
-          const existing = setsBySetNumber.get(n);
-          return (
-            <li key={n}>
-              <SetRow
-                session_exercise_id={session_exercise.id}
-                set_number={n}
-                target_weight_kg={session_exercise.target_weight_kg}
-                target_reps_max={session_exercise.target_reps_max}
-                target_rir={session_exercise.target_rir}
-                rest_seconds={session_exercise.rest_seconds}
-                existing={
-                  existing
-                    ? {
-                        id: existing.id,
-                        weight_kg: existing.weight_kg,
-                        reps: existing.reps,
-                        rir: existing.rir,
-                      }
-                    : undefined
-                }
-              />
-            </li>
-          );
-        })}
-      </ul>
-
-      {allDone ? (
-        <p className="text-accent mt-3 inline-flex items-center gap-1 text-xs font-medium">
-          <Check className="h-3.5 w-3.5" /> {performed} series registradas
-        </p>
-      ) : null}
+      {collapsed ? (
+        <button
+          type="button"
+          onClick={() => setExpanded(true)}
+          className="text-accent mt-3 flex w-full items-center justify-between text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/40"
+        >
+          <span className="inline-flex items-center gap-1">
+            <Check className="h-3.5 w-3.5" /> {performed} series registradas
+          </span>
+          <ChevronDown className="h-4 w-4" />
+        </button>
+      ) : (
+        <>
+          <ul className="flex flex-col gap-2">
+            {Array.from({ length: totalToShow }, (_, i) => i + 1).map((n) => {
+              const existing = setsBySetNumber.get(n);
+              return (
+                <li key={n}>
+                  <SetRow
+                    session_exercise_id={session_exercise.id}
+                    set_number={n}
+                    target_weight_kg={session_exercise.target_weight_kg}
+                    target_reps_max={session_exercise.target_reps_max}
+                    target_rir={session_exercise.target_rir}
+                    rest_seconds={session_exercise.rest_seconds}
+                    existing={
+                      existing
+                        ? {
+                            id: existing.id,
+                            weight_kg: existing.weight_kg,
+                            reps: existing.reps,
+                            rir: existing.rir,
+                          }
+                        : undefined
+                    }
+                  />
+                </li>
+              );
+            })}
+          </ul>
+          {allDone ? (
+            <button
+              type="button"
+              onClick={() => setExpanded(false)}
+              className="text-fg-muted mt-3 flex items-center gap-1 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/40"
+            >
+              <Check className="text-accent h-3.5 w-3.5" /> {performed} series registradas · contraer
+            </button>
+          ) : null}
+        </>
+      )}
     </Card>
   );
 }

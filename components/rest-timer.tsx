@@ -1,6 +1,6 @@
 "use client";
 
-import { Pause, Play, X } from "lucide-react";
+import { Check, Pause, Play, Timer, X } from "lucide-react";
 import { useEffect, useSyncExternalStore } from "react";
 import {
   cancelRestTimer,
@@ -77,20 +77,20 @@ export function RestTimer() {
         >
           <div className="relative h-12 w-12 shrink-0">
             <svg viewBox="0 0 36 36" className="h-12 w-12 -rotate-90">
-              <circle cx="18" cy="18" r="16" fill="none" stroke="#2a2a2a" strokeWidth="3" />
+              <circle cx="18" cy="18" r="16" fill="none" stroke="var(--color-border)" strokeWidth="3" />
               <circle
                 cx="18"
                 cy="18"
                 r="16"
                 fill="none"
-                stroke="#22c55e"
+                stroke="var(--color-accent)"
                 strokeWidth="3"
                 strokeDasharray={`${Math.min(progress, 1) * 100.5}, 100.5`}
                 strokeLinecap="round"
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold tabular-nums">
-              {done ? "✓" : "rest"}
+              {done ? <Check className="h-4 w-4" /> : <Timer className="h-4 w-4" />}
             </div>
           </div>
 

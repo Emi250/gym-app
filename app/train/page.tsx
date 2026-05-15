@@ -29,7 +29,7 @@ export default function TrainPage() {
       <AppShell title="Sesión en curso">
         <div className="flex flex-col gap-4">
           <Card padding="lg">
-            <p className="text-fg-muted text-xs uppercase tracking-wide">Sin terminar</p>
+            <p className="text-fg-muted text-xs uppercase tracking-wide">En curso</p>
             <p className="mt-2 text-xl font-semibold">{activeSession.training_day_name}</p>
             <p className="text-fg-muted mt-1 text-sm">
               Empezada{" "}
