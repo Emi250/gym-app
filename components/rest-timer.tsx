@@ -77,13 +77,13 @@ export function RestTimer() {
         >
           <div className="relative h-12 w-12 shrink-0">
             <svg viewBox="0 0 36 36" className="h-12 w-12 -rotate-90">
-              <circle cx="18" cy="18" r="16" fill="none" stroke="#2a2a2a" strokeWidth="3" />
+              <circle cx="18" cy="18" r="16" fill="none" stroke="var(--color-border)" strokeWidth="3" />
               <circle
                 cx="18"
                 cy="18"
                 r="16"
                 fill="none"
-                stroke="#22c55e"
+                stroke="var(--color-accent)"
                 strokeWidth="3"
                 strokeDasharray={`${Math.min(progress, 1) * 100.5}, 100.5`}
                 strokeLinecap="round"
