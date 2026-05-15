@@ -2,6 +2,8 @@
 
 import { useParams } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSessionDetail } from "@/lib/db/history-queries";
 
 const fmtDate = (iso: string) =>
@@ -20,7 +22,7 @@ export default function SessionDetailPage() {
   if (data === undefined) {
     return (
       <AppShell title="Sesión">
-        <div className="bg-bg-elevated h-32 animate-pulse rounded-2xl" />
+        <Skeleton className="h-32" />
       </AppShell>
     );
   }
@@ -37,10 +39,10 @@ export default function SessionDetailPage() {
   return (
     <AppShell title={session.training_day_name} back="/history">
       <div className="flex flex-col gap-5">
-        <div className="bg-bg-elevated border-border rounded-2xl border p-4">
+        <Card padding="md">
           <p className="text-fg-muted text-xs uppercase tracking-wide">Fecha</p>
           <p className="mt-1 font-medium">{fmtDate(session.started_at)}</p>
-        </div>
+        </Card>
 
         {sExercises.length === 0 ? (
           <p className="text-fg-muted text-sm">No había ejercicios en esta sesión.</p>
@@ -48,7 +50,7 @@ export default function SessionDetailPage() {
           sExercises.map((se) => {
             const seSets = sets.filter((s) => s.session_exercise_id === se.id);
             return (
-              <section key={se.id} className="bg-bg-elevated border-border rounded-2xl border p-4">
+              <Card key={se.id} padding="md">
                 <h3 className="font-semibold">{se.exercise_name}</h3>
                 <p className="text-fg-muted text-xs">
                   Objetivo: {se.target_reps_min}–{se.target_reps_max} reps @ {se.target_weight_kg} kg
@@ -72,7 +74,7 @@ export default function SessionDetailPage() {
                     ))}
                   </ul>
                 )}
-              </section>
+              </Card>
             );
           })
         )}
