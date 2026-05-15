@@ -1,7 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { BigButton } from "@/components/ui/big-button";
+
+const FOCUSABLE_SELECTOR =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 export interface ConfirmDialogProps {
   open: boolean;
@@ -29,10 +32,48 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+
+  // On open: remember what had focus and move focus into the dialog.
+  // On close: restore focus to the element that was focused before.
+  useEffect(() => {
+    if (!open) return;
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    cancelRef.current?.focus();
+    return () => {
+      previouslyFocused.current?.focus();
+    };
+  }, [open]);
+
+  // While open: Escape cancels, and Tab/Shift+Tab stay trapped within the dialog.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onCancel();
+      if (e.key === "Escape") {
+        onCancel();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+      const focusables = Array.from(
+        dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+      ).filter((el) => !el.hasAttribute("disabled"));
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === first || !dialog.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (active === last || !dialog.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -46,6 +87,7 @@ export function ConfirmDialog({
       onClick={onCancel}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label={title}
@@ -64,7 +106,7 @@ export function ConfirmDialog({
           >
             {confirmLabel}
           </BigButton>
-          <BigButton variant="ghost" size="md" onClick={onCancel}>
+          <BigButton ref={cancelRef} variant="ghost" size="md" onClick={onCancel}>
             {cancelLabel}
           </BigButton>
         </div>

@@ -47,3 +47,63 @@ describe("ConfirmDialog", () => {
     expect(onCancel).toHaveBeenCalledOnce();
   });
 });
+
+describe("ConfirmDialog focus management", () => {
+  it("moves focus to the cancel button when opened", () => {
+    render(<ConfirmDialog {...base} open cancelLabel="Cancelar" />);
+    expect(screen.getByRole("button", { name: "Cancelar" })).toHaveFocus();
+  });
+
+  it("wraps Tab focus from the last element back to the first", async () => {
+    const user = userEvent.setup();
+    render(
+      <ConfirmDialog {...base} open confirmLabel="Borrar" cancelLabel="Cancelar" />,
+    );
+    const confirm = screen.getByRole("button", { name: "Borrar" });
+    const cancel = screen.getByRole("button", { name: "Cancelar" });
+    // Cancel is autofocused and is the last focusable element in the dialog.
+    expect(cancel).toHaveFocus();
+    await user.tab();
+    expect(confirm).toHaveFocus();
+  });
+
+  it("wraps Shift+Tab focus from the first element back to the last", async () => {
+    const user = userEvent.setup();
+    render(
+      <ConfirmDialog {...base} open confirmLabel="Borrar" cancelLabel="Cancelar" />,
+    );
+    const confirm = screen.getByRole("button", { name: "Borrar" });
+    const cancel = screen.getByRole("button", { name: "Cancelar" });
+    confirm.focus();
+    await user.tab({ shift: true });
+    expect(cancel).toHaveFocus();
+  });
+
+  it("restores focus to the previously focused element when closed", () => {
+    const { rerender } = render(
+      <>
+        <button type="button">trigger</button>
+        <ConfirmDialog {...base} open={false} />
+      </>,
+    );
+    const trigger = screen.getByRole("button", { name: "trigger" });
+    trigger.focus();
+    expect(trigger).toHaveFocus();
+
+    rerender(
+      <>
+        <button type="button">trigger</button>
+        <ConfirmDialog {...base} open />
+      </>,
+    );
+    expect(trigger).not.toHaveFocus();
+
+    rerender(
+      <>
+        <button type="button">trigger</button>
+        <ConfirmDialog {...base} open={false} />
+      </>,
+    );
+    expect(trigger).toHaveFocus();
+  });
+});
