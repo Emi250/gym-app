@@ -3,8 +3,13 @@
 import { ChevronRight, Dumbbell, Play, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { BigButton } from "@/components/ui/big-button";
+import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useCurrentUserId } from "@/lib/auth/current-user";
 import { useRoutine, useRoutines } from "@/lib/db/queries";
 import { discardSession, startSession, useActiveSession } from "@/lib/db/session-queries";
@@ -16,13 +21,14 @@ export default function TrainPage() {
   const activeSession = useActiveSession();
   const activeRoutine = routines?.active ?? null;
   const routineData = useRoutine(activeRoutine?.id);
+  const [confirmDiscardOpen, setConfirmDiscardOpen] = useState(false);
 
   // If there's a session in progress, the entire screen offers to resume or discard.
   if (activeSession) {
     return (
       <AppShell title="Sesión en curso">
         <div className="flex flex-col gap-4">
-          <div className="bg-bg-elevated border-border rounded-2xl border p-5">
+          <Card padding="lg">
             <p className="text-fg-muted text-xs uppercase tracking-wide">Sin terminar</p>
             <p className="mt-2 text-xl font-semibold">{activeSession.training_day_name}</p>
             <p className="text-fg-muted mt-1 text-sm">
@@ -34,23 +40,29 @@ export default function TrainPage() {
                 month: "short",
               })}
             </p>
-          </div>
+          </Card>
 
           <BigButton onClick={() => router.push(`/train/${activeSession.id}`)}>
             <Play className="h-5 w-5" />
             Continuar sesión
           </BigButton>
-          <BigButton
-            variant="ghost"
-            size="md"
-            onClick={() => {
-              if (confirm("¿Descartar la sesión sin guardar?")) void discardSession(activeSession.id);
-            }}
-          >
+          <BigButton variant="ghost" size="md" onClick={() => setConfirmDiscardOpen(true)}>
             <X className="h-5 w-5" />
             Descartar
           </BigButton>
         </div>
+        <ConfirmDialog
+          open={confirmDiscardOpen}
+          title="Descartar sesión"
+          description="Se descarta la sesión sin guardar los datos."
+          confirmLabel="Descartar"
+          destructive
+          onConfirm={() => {
+            setConfirmDiscardOpen(false);
+            void discardSession(activeSession.id);
+          }}
+          onCancel={() => setConfirmDiscardOpen(false)}
+        />
       </AppShell>
     );
   }
@@ -58,7 +70,7 @@ export default function TrainPage() {
   if (routines === undefined) {
     return (
       <AppShell title="Entrenar">
-        <div className="bg-bg-elevated h-32 animate-pulse rounded-2xl" />
+        <Skeleton className="h-32" />
       </AppShell>
     );
   }
@@ -66,16 +78,18 @@ export default function TrainPage() {
   if (!activeRoutine) {
     return (
       <AppShell title="Entrenar">
-        <div className="bg-bg-elevated border-border flex flex-col items-center gap-3 rounded-2xl border p-6 text-center">
-          <Dumbbell className="text-fg-muted h-10 w-10" />
-          <p className="font-semibold">No hay rutina activa</p>
-          <p className="text-fg-muted text-sm">Creá o activá una rutina para empezar a entrenar.</p>
-          <Link href="/routines" className="mt-2 w-full">
-            <BigButton size="md" className="w-full">
-              Ir a Rutinas
-            </BigButton>
-          </Link>
-        </div>
+        <EmptyState
+          icon={Dumbbell}
+          title="No hay rutina activa"
+          description="Creá o activá una rutina para empezar a entrenar."
+          action={
+            <Link href="/routines" className="w-full">
+              <BigButton size="md" className="w-full">
+                Ir a Rutinas
+              </BigButton>
+            </Link>
+          }
+        />
       </AppShell>
     );
   }
@@ -83,9 +97,9 @@ export default function TrainPage() {
   return (
     <AppShell title="Elegí el día">
       {!routineData ? (
-        <div className="bg-bg-elevated h-32 animate-pulse rounded-2xl" />
+        <Skeleton className="h-32" />
       ) : routineData.days.length === 0 ? (
-        <div className="bg-bg-elevated border-border rounded-2xl border p-5">
+        <Card padding="lg">
           <p className="font-semibold">{activeRoutine.name}</p>
           <p className="text-fg-muted mt-1 text-sm">Esta rutina aún no tiene días.</p>
           <Link href={`/routines/${activeRoutine.id}`} className="mt-3 block">
@@ -93,7 +107,7 @@ export default function TrainPage() {
               Editar rutina
             </BigButton>
           </Link>
-        </div>
+        </Card>
       ) : (
         <ul className="flex flex-col gap-3">
           {routineData.days.map((day) => {
@@ -104,7 +118,7 @@ export default function TrainPage() {
               <li key={day.id}>
                 <button
                   type="button"
-                  className="bg-bg-elevated border-border flex w-full items-center gap-3 rounded-2xl border p-4 text-left active:scale-[0.99]"
+                  className="bg-bg-elevated border-border flex w-full items-center gap-3 rounded-2xl border p-4 text-left active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/40"
                   onClick={async () => {
                     if (!userId) return;
                     const id = await startSession({
