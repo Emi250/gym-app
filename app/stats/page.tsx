@@ -4,6 +4,11 @@ import { LineChart, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { ProgressChart } from "@/components/progress-chart";
+import { Card } from "@/components/ui/card";
+import { Chip } from "@/components/ui/chip";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Field, Select } from "@/components/ui/field";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useExerciseHistory, useTrainedExercises } from "@/lib/db/stats-queries";
 import { cn } from "@/lib/utils/cn";
 
@@ -39,20 +44,18 @@ export default function StatsPage() {
   if (trained === undefined) {
     return (
       <AppShell title="Stats">
-        <div className="bg-bg-elevated h-32 animate-pulse rounded-2xl" />
+        <Skeleton className="h-32" />
       </AppShell>
     );
   }
   if (trained.length === 0) {
     return (
       <AppShell title="Stats">
-        <div className="bg-bg-elevated border-border rounded-2xl border p-6 text-center">
-          <LineChart className="text-fg-muted mx-auto h-8 w-8" />
-          <p className="mt-2 font-semibold">Sin datos todavía</p>
-          <p className="text-fg-muted mt-1 text-sm">
-            Registrá al menos una sesión para ver tu progreso por ejercicio.
-          </p>
-        </div>
+        <EmptyState
+          icon={LineChart}
+          title="Sin datos todavía"
+          description="Registrá al menos una sesión para ver tu progreso por ejercicio."
+        />
       </AppShell>
     );
   }
@@ -60,36 +63,25 @@ export default function StatsPage() {
   return (
     <AppShell title="Stats">
       <div className="flex flex-col gap-5">
-        <label className="flex flex-col gap-1.5">
-          <span className="text-fg-muted text-xs font-medium uppercase tracking-wide">
-            Ejercicio
-          </span>
-          <select
+        <Field label="Ejercicio" htmlFor="stats-exercise">
+          <Select
+            id="stats-exercise"
             value={selectedId ?? ""}
             onChange={(e) => setExplicitId(e.target.value || null)}
-            className="bg-bg-elevated border-border h-14 w-full appearance-none rounded-2xl border px-4 text-base outline-none focus:ring-2 focus:ring-white/20"
           >
             {trained.map((e) => (
               <option key={e.id} value={e.id}>
                 {e.name}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Field>
 
         <div className="flex gap-2 overflow-x-auto">
           {METRICS.map((m) => (
-            <button
-              key={m.id}
-              type="button"
-              onClick={() => setMetric(m.id)}
-              className={cn(
-                "shrink-0 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
-                metric === m.id ? "bg-accent text-accent-fg" : "bg-bg-elevated text-fg-muted",
-              )}
-            >
+            <Chip key={m.id} active={metric === m.id} onClick={() => setMetric(m.id)}>
               {m.label}
-            </button>
+            </Chip>
           ))}
         </div>
 
@@ -102,29 +94,28 @@ export default function StatsPage() {
             Historial de este ejercicio
           </h2>
           {!history || history.length === 0 ? (
-            <p className="bg-bg-elevated border-border text-fg-muted rounded-2xl border p-4 text-sm">
+            <Card padding="md" className="text-fg-muted text-sm">
               Sin sesiones registradas.
-            </p>
+            </Card>
           ) : (
             <ul className="flex flex-col gap-2">
               {[...history].reverse().map((p) => (
-                <li
-                  key={p.session_id}
-                  className="bg-bg-elevated border-border rounded-2xl border p-3"
-                >
-                  <div className="flex items-baseline justify-between">
-                    <p className="text-sm font-medium">{fmtFullDate(p.finished_at)}</p>
-                    <p className="text-fg-muted text-xs tabular-nums">
-                      máx {p.max_weight_kg} kg · vol {p.total_volume.toFixed(0)}
-                    </p>
-                  </div>
-                  <ul className="text-fg-muted mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
-                    {p.sets.map((s) => (
-                      <li key={s.set_number} className="tabular-nums">
-                        {s.weight_kg}×{s.reps}
-                      </li>
-                    ))}
-                  </ul>
+                <li key={p.session_id}>
+                  <Card padding="sm">
+                    <div className="flex items-baseline justify-between">
+                      <p className="text-sm font-medium">{fmtFullDate(p.finished_at)}</p>
+                      <p className="text-fg-muted text-xs tabular-nums">
+                        máx {p.max_weight_kg} kg · vol {p.total_volume.toFixed(0)}
+                      </p>
+                    </div>
+                    <ul className="text-fg-muted mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                      {p.sets.map((s) => (
+                        <li key={s.set_number} className="tabular-nums">
+                          {s.weight_kg}×{s.reps}
+                        </li>
+                      ))}
+                    </ul>
+                  </Card>
                 </li>
               ))}
             </ul>
@@ -155,7 +146,7 @@ function SummaryStrip({ points }: { points: import("@/lib/db/stats-queries").Exe
 
 function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div className="bg-bg-elevated border-border rounded-2xl border p-3">
+    <Card padding="sm">
       <p className="text-fg-muted text-[10px] uppercase tracking-wide">{label}</p>
       <p
         className={cn(
@@ -168,6 +159,6 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
           {value}
         </span>
       </p>
-    </div>
+    </Card>
   );
 }
