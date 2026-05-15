@@ -105,6 +105,7 @@ export async function startSession(input: StartSessionInput): Promise<string> {
       exercise_id: p.exercise_id,
       exercise_name: exerciseNameById.get(p.exercise_id) ?? "Ejercicio",
       position: p.position,
+      target_sets: p.target_sets,
       target_reps_min: p.target_reps_min,
       target_reps_max: p.target_reps_max,
       target_weight_kg: p.target_weight_kg,
