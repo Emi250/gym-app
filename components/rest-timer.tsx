@@ -1,6 +1,6 @@
 "use client";
 
-import { Pause, Play, X } from "lucide-react";
+import { Check, Pause, Play, Timer, X } from "lucide-react";
 import { useEffect, useSyncExternalStore } from "react";
 import {
   cancelRestTimer,
@@ -90,7 +90,7 @@ export function RestTimer() {
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold tabular-nums">
-              {done ? "✓" : "rest"}
+              {done ? <Check className="h-4 w-4" /> : <Timer className="h-4 w-4" />}
             </div>
           </div>
 

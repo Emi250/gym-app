@@ -95,8 +95,10 @@ export default function FinishPage() {
           <Check className="h-5 w-5" />
           Volver al inicio
         </BigButton>
-        <Link href="/history" className="text-accent text-center text-sm underline">
-          Ver historial
+        <Link href="/history">
+          <BigButton variant="ghost" size="md" className="w-full">
+            Ver historial
+          </BigButton>
         </Link>
       </div>
     </AppShell>

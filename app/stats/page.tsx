@@ -136,7 +136,7 @@ function SummaryStrip({ points }: { points: import("@/lib/db/stats-queries").Exe
       <Stat label="Sesiones" value={points.length.toString()} />
       <Stat label="Mejor peso" value={`${bestEver} kg`} />
       <Stat
-        label="Δ inicio"
+        label="Cambio"
         value={`${delta >= 0 ? "+" : ""}${delta.toFixed(1)} kg`}
         accent={delta > 0}
       />

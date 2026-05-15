@@ -186,7 +186,7 @@ function formatWeight(weight_kg: number, bodyweight: boolean): string {
   return `Peso corporal + ${weight_kg} kg`;
 }
 
-function fmtRelativeDate(iso: string): string {
+function fmtShortDate(iso: string): string {
   // Display absolute short date; avoids Date.now() during render (React 19 purity lint).
   return new Date(iso).toLocaleDateString("es", { day: "2-digit", month: "short" });
 }
@@ -225,7 +225,7 @@ function ExerciseBlock({
         </p>
         {last ? (
           <p className="text-fg-muted mt-1 text-xs">
-            Última vez ({fmtRelativeDate(last.finished_at)}):{" "}
+            Última vez ({fmtShortDate(last.finished_at)}):{" "}
             <span className="text-fg/80 tabular-nums">
               {last.sets
                 .map((s) => `${s.weight_kg}×${s.reps}`)
