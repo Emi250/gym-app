@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Archive, CheckCircle2, Circle, Plus } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { BigButton } from "@/components/ui/big-button";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { activateRoutine, useRoutines } from "@/lib/db/queries";
 import { showToast } from "@/lib/toast/toast-store";
 import { routineDurationLabel } from "@/lib/utils/routine-time";
@@ -22,7 +24,10 @@ export default function RoutinesPage() {
         </Link>
 
         {!data ? (
-          <Skeleton />
+          <div className="flex flex-col gap-3">
+            <Skeleton className="h-24" />
+            <Skeleton className="h-24" />
+          </div>
         ) : (
           <>
             <Section title="Activa">
@@ -74,18 +79,9 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function EmptyHint({ children }: { children: React.ReactNode }) {
   return (
-    <p className="bg-bg-elevated border-border text-fg-muted rounded-2xl border p-4 text-sm">
+    <Card padding="md" className="text-fg-muted text-sm">
       {children}
-    </p>
-  );
-}
-
-function Skeleton() {
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="bg-bg-elevated h-24 animate-pulse rounded-2xl" />
-      <div className="bg-bg-elevated h-24 animate-pulse rounded-2xl" />
-    </div>
+    </Card>
   );
 }
 
@@ -98,7 +94,7 @@ function RoutineCard({
 }) {
   const duration = routineDurationLabel(routine.started_at);
   return (
-    <div className="bg-bg-elevated border-border flex items-center gap-3 rounded-2xl border p-4">
+    <Card padding="md" className="flex items-center gap-3">
       <ActivateButton routineId={routine.id} active={state === "active"} disabled={state === "archived"} />
       <Link href={`/routines/${routine.id}`} className="flex-1">
         <p className="text-base font-semibold">{routine.name}</p>
@@ -114,7 +110,7 @@ function RoutineCard({
           ) : null}
         </p>
       </Link>
-    </div>
+    </Card>
   );
 }
 
@@ -137,7 +133,7 @@ function ActivateButton({
         await activateRoutine(routineId);
         showToast("Rutina activada", "success");
       }}
-      className="text-fg-muted disabled:opacity-30"
+      className="text-fg-muted disabled:opacity-30 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/40"
     >
       {active ? (
         <CheckCircle2 className="text-accent h-7 w-7" />

@@ -6,6 +6,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { BigButton } from "@/components/ui/big-button";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { applyProgressionToSession, type ProgressionDiff } from "@/lib/progression/apply";
 import { useSession } from "@/lib/db/session-queries";
 
@@ -37,7 +39,7 @@ export default function FinishPage() {
   if (session === undefined || diffs === null) {
     return (
       <AppShell title="Sesión terminada">
-        <div className="bg-bg-elevated h-48 animate-pulse rounded-2xl" />
+        <Skeleton className="h-48" />
       </AppShell>
     );
   }
@@ -56,7 +58,7 @@ export default function FinishPage() {
   return (
     <AppShell title="Sesión terminada">
       <div className="flex flex-col gap-5">
-        <div className="bg-bg-elevated border-border flex items-center gap-3 rounded-2xl border p-5">
+        <Card padding="lg" className="flex items-center gap-3">
           <div className="bg-accent/15 text-accent flex h-12 w-12 items-center justify-center rounded-xl">
             <PartyPopper className="h-6 w-6" />
           </div>
@@ -64,12 +66,12 @@ export default function FinishPage() {
             <p className="font-semibold">¡Listo!</p>
             <p className="text-fg-muted text-xs">{session.session.training_day_name}</p>
           </div>
-        </div>
+        </Card>
 
         {diffs.length === 0 ? (
-          <p className="bg-bg-elevated border-border text-fg-muted rounded-2xl border p-4 text-sm">
+          <Card padding="md" className="text-fg-muted text-sm">
             No registraste series, así que no hay ajustes que aplicar.
-          </p>
+          </Card>
         ) : (
           <section className="flex flex-col gap-3">
             <h2 className="text-fg-muted text-xs font-semibold uppercase tracking-wide">
@@ -117,17 +119,19 @@ function DiffRow({ diff }: { diff: ProgressionDiff }) {
         ? "Deload"
         : "Mantiene";
   return (
-    <li className="bg-bg-elevated border-border flex items-center justify-between rounded-2xl border p-3">
-      <span>
-        <span className="block font-medium">{diff.exercise_name}</span>
-        <span className="text-fg-muted text-xs tabular-nums">
-          {diff.previous_weight_kg} kg → {diff.next_weight_kg} kg
+    <li>
+      <Card padding="sm" className="flex items-center justify-between">
+        <span>
+          <span className="block font-medium">{diff.exercise_name}</span>
+          <span className="text-fg-muted text-xs tabular-nums">
+            {diff.previous_weight_kg} kg → {diff.next_weight_kg} kg
+          </span>
         </span>
-      </span>
-      <span className="flex items-center gap-1 text-sm font-medium tabular-nums">
-        {icon}
-        {label}
-      </span>
+        <span className="flex items-center gap-1 text-sm font-medium tabular-nums">
+          {icon}
+          {label}
+        </span>
+      </Card>
     </li>
   );
 }
