@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
+import { Chip } from "@/components/ui/chip";
 import { useExercises } from "@/lib/db/queries";
-import { cn } from "@/lib/utils/cn";
 import { stripDiacritics } from "@/lib/utils/text";
 import type { LocalExercise, MuscleGroup } from "@/lib/db/types";
 
@@ -129,28 +129,5 @@ export function ExercisePicker({ open, onClose, onPick }: ExercisePickerProps) {
         </ul>
       </div>
     </div>
-  );
-}
-
-function Chip({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "shrink-0 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
-        active ? "bg-accent text-accent-fg" : "bg-bg-elevated text-fg-muted",
-      )}
-    >
-      {children}
-    </button>
   );
 }

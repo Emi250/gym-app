@@ -3,6 +3,7 @@
 import { Check, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { startRestTimer } from "@/components/rest-timer";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { NumberStepper } from "@/components/ui/number-stepper";
 import { softDeleteSet, upsertSet } from "@/lib/db/session-queries";
 import { showToast } from "@/lib/toast/toast-store";
@@ -45,6 +46,7 @@ export function SetRow({
   const [reps, setReps] = useState(existing?.reps ?? target_reps_max);
   const [rir, setRir] = useState<number | null>(existing?.rir ?? target_rir);
   const [saving, setSaving] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   if (!editing && existing) {
     return (
@@ -68,6 +70,7 @@ export function SetRow({
   }
 
   return (
+    <>
     <div className={cn("bg-bg border-border rounded-xl border p-3", editing && "ring-accent/30 ring-1")}>
       <div className="mb-3 flex items-center justify-between">
         <span className="text-fg-muted text-xs font-semibold uppercase tracking-wide">
@@ -76,9 +79,7 @@ export function SetRow({
         {existing ? (
           <button
             type="button"
-            onClick={() => {
-              if (confirm("¿Borrar esta serie?")) void softDeleteSet(existing.id);
-            }}
+            onClick={() => setConfirmDeleteOpen(true)}
             className="text-fg-muted hover:text-danger p-1"
             aria-label="Borrar serie"
           >
@@ -142,5 +143,18 @@ export function SetRow({
         {existing ? "Guardar cambios" : "Guardar serie"}
       </button>
     </div>
+      <ConfirmDialog
+        open={confirmDeleteOpen}
+        title="Borrar serie"
+        description="Se elimina esta serie registrada."
+        confirmLabel="Borrar"
+        destructive
+        onConfirm={() => {
+          setConfirmDeleteOpen(false);
+          if (existing) void softDeleteSet(existing.id);
+        }}
+        onCancel={() => setConfirmDeleteOpen(false)}
+      />
+    </>
   );
 }
