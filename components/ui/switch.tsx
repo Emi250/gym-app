@@ -7,16 +7,30 @@ export interface SwitchProps {
   id?: string;
   disabled?: boolean;
   className?: string;
+  /** Accessible name when there is no associated `<label>`. */
+  "aria-label"?: string;
+  /** Id of an element that labels the switch. */
+  "aria-labelledby"?: string;
 }
 
 /** Accessible on/off toggle. Controlled — pass `checked` and `onCheckedChange`. */
-export function Switch({ checked, onCheckedChange, id, disabled, className }: SwitchProps) {
+export function Switch({
+  checked,
+  onCheckedChange,
+  id,
+  disabled,
+  className,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
+}: SwitchProps) {
   return (
     <button
       type="button"
       role="switch"
       id={id}
       aria-checked={checked}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledby}
       disabled={disabled}
       onClick={() => onCheckedChange(!checked)}
       className={cn(
