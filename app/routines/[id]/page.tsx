@@ -167,6 +167,7 @@ function DayEditor({
         <input
           value={day.name}
           onChange={(e) => void renameTrainingDay(day.id, e.target.value)}
+          aria-label="Nombre del día"
           className="flex-1 bg-transparent text-lg font-semibold outline-none"
         />
         <button
