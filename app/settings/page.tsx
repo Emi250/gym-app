@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { BigButton } from "@/components/ui/big-button";
+import { Card } from "@/components/ui/card";
 import { signOut, useAuthState } from "@/lib/auth/current-user";
 import { useSyncSnapshot } from "@/lib/sync/sync-store";
 
@@ -76,9 +77,9 @@ export default function SettingsPage() {
 
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="bg-bg-elevated border-border rounded-2xl border p-4">
+    <Card padding="md">
       <p className="text-fg-muted text-xs uppercase tracking-wide">{label}</p>
       <div className="mt-1">{children}</div>
-    </div>
+    </Card>
   );
 }
