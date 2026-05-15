@@ -1,11 +1,15 @@
 "use client";
 
-import { Check, Flag, Trash2 } from "lucide-react";
+import { Check, Dumbbell, Flag, Trash2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { SetRow } from "@/components/set-row";
 import { BigButton } from "@/components/ui/big-button";
+import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   discardSession,
   markSessionFinished,
@@ -15,33 +19,38 @@ import {
 import { applyProgressionToSession } from "@/lib/progression/apply";
 import { showToast } from "@/lib/toast/toast-store";
 
+/** Pure progress math for a live session: sets logged vs. sets expected.
+ *  `expected` per exercise is the configured `target_sets`, expanded if the
+ *  user logged extra sets so the progress bar never exceeds 100%. */
+export function computeSessionProgress(
+  sExercises: { id: string; target_sets: number }[],
+  sets: { session_exercise_id: string; set_number: number }[],
+): { done: number; expected: number } {
+  let expected = 0;
+  for (const se of sExercises) {
+    const performedForSe = sets.filter((s) => s.session_exercise_id === se.id).length;
+    expected += Math.max(se.target_sets, performedForSe);
+  }
+  return { done: sets.length, expected };
+}
+
 export default function LiveSessionPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const data = useSession(params.id);
   const [finishing, setFinishing] = useState(false);
+  const [confirmFinishOpen, setConfirmFinishOpen] = useState(false);
+  const [confirmDiscardOpen, setConfirmDiscardOpen] = useState(false);
 
-  const totals = useMemo(() => {
-    if (!data) return null;
-    const expectedPerExercise = new Map<string, number>();
-    let expected = 0;
-    for (const se of data.sExercises) {
-      // The target_sets count lives on planned_exercises, not on session_exercises.
-      // For the bar we use the maximum set_number seen + planned default of 3 if zero.
-      const setsForSe = data.sets.filter((s) => s.session_exercise_id === se.id);
-      const maxSet = setsForSe.reduce((m, s) => Math.max(m, s.set_number), 0);
-      const exp = Math.max(maxSet, 3); // assume 3 unless more were performed
-      expectedPerExercise.set(se.id, exp);
-      expected += exp;
-    }
-    const done = data.sets.length;
-    return { done, expected, expectedPerExercise };
-  }, [data]);
+  const totals = useMemo(
+    () => (data ? computeSessionProgress(data.sExercises, data.sets) : null),
+    [data],
+  );
 
   if (data === undefined) {
     return (
       <AppShell title="Cargando…">
-        <div className="bg-bg-elevated h-32 animate-pulse rounded-2xl" />
+        <Skeleton className="h-32" />
       </AppShell>
     );
   }
@@ -67,22 +76,48 @@ export default function LiveSessionPage() {
     return null;
   }
 
+  async function runFinish() {
+    setConfirmFinishOpen(false);
+    setFinishing(true);
+    try {
+      await applyProgressionToSession(session.id);
+      await markSessionFinished(session.id);
+      router.replace(`/train/${session.id}/finish`);
+    } catch {
+      showToast("No se pudo terminar la sesión", "error");
+    } finally {
+      setFinishing(false);
+    }
+  }
+
   return (
     <AppShell title={session.training_day_name} back="/train">
       <div className="flex flex-col gap-5">
         {totals ? (
-          <div className="bg-bg-elevated border-border rounded-2xl border p-4">
-            <p className="text-fg-muted text-xs uppercase tracking-wide">Progreso</p>
-            <p className="mt-1 text-2xl font-bold tabular-nums">
-              {totals.done} <span className="text-fg-muted text-base font-medium">series</span>
-            </p>
-          </div>
+          <Card padding="md">
+            <div className="flex items-baseline justify-between">
+              <p className="text-fg-muted text-xs uppercase tracking-wide">Progreso</p>
+              <p className="text-fg-muted text-xs tabular-nums">
+                {totals.done} / {totals.expected} series
+              </p>
+            </div>
+            <div className="bg-bg-elevated-2 mt-2 h-2 overflow-hidden rounded-full">
+              <div
+                className="bg-accent h-full rounded-full transition-[width]"
+                style={{
+                  width: `${totals.expected > 0 ? Math.round((totals.done / totals.expected) * 100) : 0}%`,
+                }}
+              />
+            </div>
+          </Card>
         ) : null}
 
         {sExercises.length === 0 ? (
-          <p className="bg-bg-elevated border-border text-fg-muted rounded-2xl border p-4 text-sm">
-            Esta sesión no tenía ejercicios planificados.
-          </p>
+          <EmptyState
+            icon={Dumbbell}
+            title="Sin ejercicios"
+            description="Esta sesión no tenía ejercicios planificados."
+          />
         ) : (
           sExercises.map((se) => (
             <ExerciseBlock
@@ -97,19 +132,11 @@ export default function LiveSessionPage() {
         <div className="flex flex-col gap-2">
           <BigButton
             disabled={finishing}
-            onClick={async () => {
+            onClick={() => {
               if (sets.length === 0) {
-                if (!confirm("No registraste ninguna serie. ¿Terminar igual?")) return;
-              }
-              setFinishing(true);
-              try {
-                await applyProgressionToSession(session.id);
-                await markSessionFinished(session.id);
-                router.replace(`/train/${session.id}/finish`);
-              } catch {
-                showToast("No se pudo terminar la sesión", "error");
-              } finally {
-                setFinishing(false);
+                setConfirmFinishOpen(true);
+              } else {
+                void runFinish();
               }
             }}
           >
@@ -120,11 +147,7 @@ export default function LiveSessionPage() {
           <BigButton
             variant="ghost"
             size="md"
-            onClick={() => {
-              if (confirm("¿Descartar la sesión sin guardar?")) {
-                void discardSession(session.id).then(() => router.replace("/train"));
-              }
-            }}
+            onClick={() => setConfirmDiscardOpen(true)}
             className="text-fg-muted"
           >
             <Trash2 className="h-4 w-4" />
@@ -132,6 +155,27 @@ export default function LiveSessionPage() {
           </BigButton>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmFinishOpen}
+        title="Terminar sin series"
+        description="No registraste ninguna serie. ¿Terminar la sesión igual?"
+        confirmLabel="Terminar"
+        onConfirm={() => void runFinish()}
+        onCancel={() => setConfirmFinishOpen(false)}
+      />
+      <ConfirmDialog
+        open={confirmDiscardOpen}
+        title="Descartar sesión"
+        description="Se descarta la sesión sin guardar los datos."
+        confirmLabel="Descartar"
+        destructive
+        onConfirm={() => {
+          setConfirmDiscardOpen(false);
+          void discardSession(session.id).then(() => router.replace("/train"));
+        }}
+        onCancel={() => setConfirmDiscardOpen(false)}
+      />
     </AppShell>
   );
 }
@@ -164,7 +208,7 @@ function ExerciseBlock({
   const last = useLastPerformance(session_exercise.exercise_id, session_id);
 
   return (
-    <section className="bg-bg-elevated border-border rounded-2xl border p-4">
+    <Card padding="md">
       <header className="mb-3">
         <h3 className="text-base font-semibold">
           {session_exercise.exercise_name}
@@ -224,6 +268,6 @@ function ExerciseBlock({
           <Check className="h-3.5 w-3.5" /> {performed} series registradas
         </p>
       ) : null}
-    </section>
+    </Card>
   );
 }
