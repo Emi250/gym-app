@@ -27,4 +27,9 @@ describe("Switch", () => {
     await userEvent.click(screen.getByRole("switch"));
     expect(onChange).not.toHaveBeenCalled();
   });
+
+  it("forwards an aria-label as the accessible name", () => {
+    render(<Switch checked={false} onCheckedChange={() => {}} aria-label="Peso corporal" />);
+    expect(screen.getByRole("switch", { name: "Peso corporal" })).toBeInTheDocument();
+  });
 });

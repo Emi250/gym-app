@@ -303,6 +303,7 @@ function PlannedExerciseRow({
               </span>
             </span>
             <Switch
+              aria-label="Peso corporal"
               checked={planned.is_bodyweight}
               onCheckedChange={(checked) =>
                 void updatePlannedExercise(planned.id, {
@@ -395,6 +396,7 @@ function RestField({ planned }: { planned: LocalPlannedExercise }) {
       <label className="bg-bg-elevated border-border flex h-12 items-center justify-between rounded-xl border px-3">
         <span className="text-sm font-medium">Timer de descanso (opcional)</span>
         <Switch
+          aria-label="Timer de descanso"
           checked={enabled}
           onCheckedChange={(checked) =>
             void updatePlannedExercise(planned.id, {
@@ -431,6 +433,7 @@ function RirField({ planned }: { planned: LocalPlannedExercise }) {
       <label className="bg-bg-elevated border-border flex h-12 items-center justify-between rounded-xl border px-3">
         <span className="text-sm font-medium">RIR objetivo (opcional)</span>
         <Switch
+          aria-label="RIR objetivo"
           checked={enabled}
           onCheckedChange={(checked) =>
             void updatePlannedExercise(planned.id, {
