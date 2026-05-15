@@ -13,6 +13,7 @@ import {
   useSession,
 } from "@/lib/db/session-queries";
 import { applyProgressionToSession } from "@/lib/progression/apply";
+import { showToast } from "@/lib/toast/toast-store";
 
 export default function LiveSessionPage() {
   const params = useParams<{ id: string }>();
@@ -105,6 +106,8 @@ export default function LiveSessionPage() {
                 await applyProgressionToSession(session.id);
                 await markSessionFinished(session.id);
                 router.replace(`/train/${session.id}/finish`);
+              } catch {
+                showToast("No se pudo terminar la sesión", "error");
               } finally {
                 setFinishing(false);
               }

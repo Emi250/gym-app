@@ -130,6 +130,8 @@ export function SetRow({
             if (isNew && rest_seconds && rest_seconds > 0) {
               startRestTimer(rest_seconds);
             }
+          } catch {
+            showToast("No se pudo guardar la serie", "error");
           } finally {
             setSaving(false);
           }

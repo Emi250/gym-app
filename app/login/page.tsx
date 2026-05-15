@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { signInWithGoogle } from "@/lib/auth/current-user";
+import { showToast } from "@/lib/toast/toast-store";
 
 export default function LoginPage() {
   const [busy, setBusy] = useState(false);
@@ -26,6 +27,7 @@ export default function LoginPage() {
             await signInWithGoogle();
           } catch (err) {
             console.error(err);
+            showToast("No se pudo iniciar sesión. Reintentá.", "error");
             setBusy(false);
           }
         }}
