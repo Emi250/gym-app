@@ -28,15 +28,14 @@ import {
   useExercises,
   useRoutine,
 } from "@/lib/db/queries";
+import { useDebouncedCallback } from "@/lib/hooks/use-debounced-callback";
 import { showToast } from "@/lib/toast/toast-store";
 import type { LocalExercise, LocalPlannedExercise, LocalTrainingDay } from "@/lib/db/types";
 
 export default function EditRoutinePage() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
   const data = useRoutine(params.id);
   const exercises = useExercises();
-  const [confirmDeleteRoutine, setConfirmDeleteRoutine] = useState(false);
 
   if (data === undefined) {
     return (
@@ -56,16 +55,36 @@ export default function EditRoutinePage() {
     );
   }
 
+  return <RoutineEditor data={data} exercises={exercises} />;
+}
+
+function RoutineEditor({
+  data,
+  exercises,
+}: {
+  data: NonNullable<ReturnType<typeof useRoutine>>;
+  exercises: LocalExercise[] | undefined;
+}) {
+  const router = useRouter();
+  const [confirmDeleteRoutine, setConfirmDeleteRoutine] = useState(false);
   const { routine, days, planned } = data;
   const startedAtInput = routine.started_at ? routine.started_at.slice(0, 10) : "";
+  const [nameDraft, setNameDraft] = useState(routine.name);
+  const persistName = useDebouncedCallback(
+    (value: string) => void updateRoutine(routine.id, { name: value }),
+    400,
+  );
 
   return (
     <AppShell title="Editar rutina" back="/routines">
       <div className="flex flex-col gap-6">
         <Field label="Nombre">
           <Input
-            value={routine.name}
-            onChange={(e) => void updateRoutine(routine.id, { name: e.target.value })}
+            value={nameDraft}
+            onChange={(e) => {
+              setNameDraft(e.target.value);
+              persistName(e.target.value);
+            }}
           />
         </Field>
 
@@ -164,6 +183,11 @@ function DayEditor({
 }) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [confirmDeleteDay, setConfirmDeleteDay] = useState(false);
+  const [dayNameDraft, setDayNameDraft] = useState(day.name);
+  const persistDayName = useDebouncedCallback(
+    (value: string) => void renameTrainingDay(day.id, value),
+    400,
+  );
   const exerciseById = useMemo(
     () => new Map(exercises.map((e) => [e.id, e])),
     [exercises],
@@ -178,8 +202,11 @@ function DayEditor({
       <div className="flex items-center gap-2">
         {dragHandle}
         <input
-          value={day.name}
-          onChange={(e) => void renameTrainingDay(day.id, e.target.value)}
+          value={dayNameDraft}
+          onChange={(e) => {
+            setDayNameDraft(e.target.value);
+            persistDayName(e.target.value);
+          }}
           aria-label="Nombre del día"
           className="flex-1 bg-transparent text-lg font-semibold outline-none"
         />
