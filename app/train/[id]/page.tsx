@@ -154,10 +154,8 @@ function ExerciseBlock({
   session_id: string;
 }) {
   const setsBySetNumber = new Map(sets.map((s) => [s.set_number, s]));
-  // We don't know exactly target_sets for this session_exercise; mirror the spec
-  // and default to 3 unless the user logged more (allow extra sets organically).
   const performed = sets.length;
-  const planned = 3;
+  const planned = session_exercise.target_sets;
   const totalToShow = Math.max(planned, performed + 1);
   const allDone = performed >= planned;
   const last = useLastPerformance(session_exercise.exercise_id, session_id);
