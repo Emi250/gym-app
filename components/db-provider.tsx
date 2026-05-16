@@ -22,7 +22,7 @@ export function DbProvider({ children }: { children: ReactNode }) {
   if (error) {
     return (
       <div className="bg-bg flex min-h-svh items-center justify-center p-6">
-        <div className="border-danger max-w-sm rounded-2xl border p-5">
+        <div className="bg-bg-elevated border-danger shadow-card max-w-sm rounded-card border p-5 backdrop-blur-sm">
           <p className="text-danger font-semibold">No se pudo iniciar la base local</p>
           <p className="text-fg-muted mt-2 text-sm">{error.message}</p>
         </div>
