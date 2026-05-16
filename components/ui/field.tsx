@@ -9,8 +9,9 @@ import { cn } from "@/lib/utils/cn";
 
 /** Shared control surface for text inputs and selects. */
 const controlStyles =
-  "bg-bg-elevated border-border h-14 w-full rounded-2xl border px-4 text-base " +
-  "outline-none focus-visible:ring-2 focus-visible:ring-fg/40";
+  "bg-bg-elevated border-border h-14 w-full rounded-control border px-4 text-base " +
+  "backdrop-blur-sm outline-none transition-colors " +
+  "focus-visible:border-accent/50 focus-visible:ring-2 focus-visible:ring-accent/40";
 
 export interface FieldProps {
   label: string;
