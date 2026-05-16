@@ -3,14 +3,15 @@ import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils/cn";
 
 const bigButtonStyles = cva(
-  "flex items-center justify-center gap-2 rounded-2xl font-semibold transition-colors " +
+  "flex items-center justify-center gap-2 rounded-card font-semibold transition-[transform,background-color,opacity] duration-150 ease-out " +
     "active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 " +
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/40",
   {
     variants: {
       variant: {
-        primary: "bg-accent text-accent-fg",
-        secondary: "bg-bg-elevated text-fg border border-border",
+        primary:
+          "bg-[linear-gradient(135deg,#f59e0b,#d97706)] text-accent-fg shadow-card",
+        secondary: "bg-bg-elevated text-fg border border-border backdrop-blur-sm",
         ghost: "text-fg hover:bg-bg-elevated",
         danger: "bg-danger text-fg",
       },
