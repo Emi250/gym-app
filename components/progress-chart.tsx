@@ -40,28 +40,28 @@ export function ProgressChart({ data, metric }: ProgressChartProps) {
 
   if (chartData.length === 0) {
     return (
-      <div className="bg-bg-elevated border-border text-fg-muted flex h-56 items-center justify-center rounded-2xl border text-sm">
+      <div className="bg-bg-elevated border-border text-fg-muted flex h-56 items-center justify-center rounded-card border text-sm">
         Sin datos todavía
       </div>
     );
   }
 
   return (
-    <div className="bg-bg-elevated border-border h-56 rounded-2xl border p-3">
+    <div className="bg-bg-elevated border-border h-56 rounded-card border p-3">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
-          <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 3" />
+          <CartesianGrid stroke="rgb(255 255 255 / 0.08)" strokeDasharray="3 3" />
           <XAxis
             dataKey="label"
-            tick={{ fill: "var(--color-fg-muted)", fontSize: 11 }}
-            tickLine={{ stroke: "var(--color-border)" }}
-            axisLine={{ stroke: "var(--color-border)" }}
+            tick={{ fill: "#a1a1aa", fontSize: 11, fontFamily: "var(--font-mono, ui-monospace, monospace)" }}
+            tickLine={{ stroke: "rgb(255 255 255 / 0.08)" }}
+            axisLine={{ stroke: "rgb(255 255 255 / 0.08)" }}
             minTickGap={20}
           />
           <YAxis
-            tick={{ fill: "var(--color-fg-muted)", fontSize: 11 }}
-            tickLine={{ stroke: "var(--color-border)" }}
-            axisLine={{ stroke: "var(--color-border)" }}
+            tick={{ fill: "#a1a1aa", fontSize: 11, fontFamily: "var(--font-mono, ui-monospace, monospace)" }}
+            tickLine={{ stroke: "rgb(255 255 255 / 0.08)" }}
+            axisLine={{ stroke: "rgb(255 255 255 / 0.08)" }}
             width={40}
           />
           <Tooltip
@@ -77,9 +77,9 @@ export function ProgressChart({ data, metric }: ProgressChartProps) {
           <Line
             type="monotone"
             dataKey="value"
-            stroke="var(--color-accent)"
+            stroke="#f59e0b"
             strokeWidth={2.5}
-            dot={{ r: 3, fill: "var(--color-accent)" }}
+            dot={{ r: 3, fill: "#f59e0b" }}
             activeDot={{ r: 5 }}
             isAnimationActive={false}
           />
