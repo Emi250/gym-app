@@ -42,8 +42,8 @@ export default function HistoryPage() {
         {sessions.map((s) => (
           <li key={s.id}>
             <Link href={`/history/${s.id}`}>
-              <Card padding="md" className="flex items-center gap-3">
-                <div className="bg-accent/15 text-accent flex h-12 w-12 items-center justify-center rounded-xl">
+              <Card interactive padding="md" className="flex items-center gap-3">
+                <div className="bg-accent/15 text-accent rounded-control flex h-12 w-12 items-center justify-center">
                   <Dumbbell className="h-5 w-5" />
                 </div>
                 <div className="flex-1">

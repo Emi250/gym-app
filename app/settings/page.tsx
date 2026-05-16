@@ -50,7 +50,7 @@ export default function SettingsPage() {
         </Section>
 
         <Section label="Versión">
-          <p className="font-medium">0.1.0</p>
+          <p className="font-mono font-medium tabular-nums">0.1.0</p>
         </Section>
 
         <BigButton
