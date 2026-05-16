@@ -30,7 +30,9 @@ export default function TrainPage() {
         <div className="flex flex-col gap-4">
           <Card padding="lg">
             <p className="text-fg-muted text-xs uppercase tracking-wide">En curso</p>
-            <p className="mt-2 text-xl font-semibold">{activeSession.training_day_name}</p>
+            <p className="mt-2 text-xl font-semibold tracking-[-0.02em]">
+              {activeSession.training_day_name}
+            </p>
             <p className="text-fg-muted mt-1 text-sm">
               Empezada{" "}
               {new Date(activeSession.started_at).toLocaleString("es", {
@@ -118,7 +120,7 @@ export default function TrainPage() {
               <li key={day.id}>
                 <button
                   type="button"
-                  className="bg-bg-elevated border-border flex w-full items-center gap-3 rounded-2xl border p-4 text-left active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/40"
+                  className="bg-bg-elevated border-border shadow-card flex w-full items-center gap-3 rounded-card border p-4 text-left backdrop-blur-sm transition-colors hover:bg-bg-elevated-2 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/40"
                   onClick={async () => {
                     if (!userId) return;
                     const id = await startSession({
@@ -129,13 +131,14 @@ export default function TrainPage() {
                     router.push(`/train/${id}`);
                   }}
                 >
-                  <div className="bg-accent/15 text-accent flex h-12 w-12 items-center justify-center rounded-xl">
+                  <div className="bg-accent/15 text-accent flex h-12 w-12 items-center justify-center rounded-control">
                     <Dumbbell className="h-5 w-5" />
                   </div>
                   <div className="flex-1">
                     <p className="text-base font-semibold">{day.name}</p>
                     <p className="text-fg-muted text-xs">
-                      {plannedCount} {plannedCount === 1 ? "ejercicio" : "ejercicios"}
+                      <span className="tabular-nums">{plannedCount}</span>{" "}
+                      {plannedCount === 1 ? "ejercicio" : "ejercicios"}
                     </p>
                   </div>
                   <ChevronRight className="text-fg-muted h-5 w-5" />
