@@ -2,12 +2,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { forwardRef, type HTMLAttributes } from "react";
 import { cn } from "@/lib/utils/cn";
 
-const cardStyles = cva("bg-bg-elevated border-border rounded-2xl border", {
-  variants: {
-    padding: { none: "", sm: "p-3", md: "p-4", lg: "p-5" },
+const cardStyles = cva(
+  "bg-bg-elevated border-border rounded-card border shadow-card backdrop-blur-sm",
+  {
+    variants: {
+      padding: { none: "", sm: "p-3", md: "p-4", lg: "p-5" },
+      interactive: {
+        true: "transition-colors hover:bg-bg-elevated-2 active:scale-[0.99]",
+        false: "",
+      },
+    },
+    defaultVariants: { padding: "md", interactive: false },
   },
-  defaultVariants: { padding: "md" },
-});
+);
 
 export interface CardProps
   extends HTMLAttributes<HTMLDivElement>,
@@ -15,8 +22,8 @@ export interface CardProps
 
 /** Elevated, bordered container. The universal surface for content blocks. */
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ className, padding, ...props }, ref) => (
-    <div ref={ref} className={cn(cardStyles({ padding }), className)} {...props} />
+  ({ className, padding, interactive, ...props }, ref) => (
+    <div ref={ref} className={cn(cardStyles({ padding, interactive }), className)} {...props} />
   ),
 );
 Card.displayName = "Card";
