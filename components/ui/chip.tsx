@@ -16,7 +16,9 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(
       className={cn(
         "shrink-0 rounded-full px-3 py-1.5 text-sm font-medium transition-colors " +
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/40",
-        active ? "bg-accent text-accent-fg" : "bg-bg-elevated text-fg-muted",
+        active
+          ? "bg-accent text-accent-fg"
+          : "bg-bg-elevated text-fg-muted border border-border",
         className,
       )}
       {...props}
