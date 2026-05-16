@@ -97,7 +97,11 @@ function SortableItem<T extends { id: string }>({
     touchAction: "manipulation",
   };
   return (
-    <li ref={setNodeRef} style={style} className={cn(isDragging && "z-10")}>
+    <li
+      ref={setNodeRef}
+      style={style}
+      className={cn(isDragging && "rounded-card shadow-overlay z-10")}
+    >
       {render(item, {
         handleProps: { ...attributes, ...listeners, role: undefined },
         isDragging,

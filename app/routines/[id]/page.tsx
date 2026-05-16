@@ -102,7 +102,9 @@ function RoutineEditor({
 
         <section className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-wide">Días de entrenamiento</h2>
+            <h2 className="text-fg-muted text-xs font-semibold uppercase tracking-wide">
+              Días de entrenamiento
+            </h2>
             <button
               type="button"
               onClick={async () => {
@@ -115,7 +117,7 @@ function RoutineEditor({
             </button>
           </div>
           {days.length === 0 ? (
-            <p className="bg-bg-elevated border-border text-fg-muted rounded-2xl border p-4 text-sm">
+            <p className="bg-bg-elevated border-border text-fg-muted rounded-card border p-4 text-sm">
               Todavía no hay días. Agregá uno para empezar.
             </p>
           ) : (
@@ -434,7 +436,7 @@ function RestField({ planned }: { planned: LocalPlannedExercise }) {
       </label>
       {enabled ? (
         <div className="flex items-end gap-3">
-          <div className="bg-bg-elevated border-border flex h-14 w-20 shrink-0 items-center justify-center rounded-2xl border text-xl font-bold tabular-nums">
+          <div className="bg-bg-elevated border-border flex h-14 w-20 shrink-0 items-center justify-center rounded-control border text-xl font-bold tabular-nums">
             {display}
           </div>
           <div className="min-w-0 flex-1">

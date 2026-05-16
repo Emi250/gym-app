@@ -54,7 +54,7 @@ export default function NewRoutinePage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Push / Pull / Legs"
-            className="bg-bg-elevated border-border h-14 w-full rounded-2xl border px-4 text-base outline-none focus:ring-2 focus:ring-white/20"
+            className="bg-bg-elevated border-border h-14 w-full rounded-control border px-4 text-base outline-none transition-colors focus-visible:border-accent/50 focus-visible:ring-2 focus-visible:ring-accent/40"
           />
         </Field>
 
@@ -66,17 +66,17 @@ export default function NewRoutinePage() {
             type="date"
             value={startedAt}
             onChange={(e) => setStartedAt(e.target.value)}
-            className="bg-bg-elevated border-border h-14 w-full rounded-2xl border px-4 text-base outline-none focus:ring-2 focus:ring-white/20"
+            className="bg-bg-elevated border-border h-14 w-full rounded-control border px-4 text-base outline-none transition-colors focus-visible:border-accent/50 focus-visible:ring-2 focus-visible:ring-accent/40"
           />
         </Field>
 
-        <label className="bg-bg-elevated border-border flex h-14 items-center justify-between rounded-2xl border px-4">
+        <label className="bg-bg-elevated border-border flex h-14 items-center justify-between rounded-control border px-4">
           <span className="text-sm font-medium">Activar al crear</span>
           <input
             type="checkbox"
             checked={activate}
             onChange={(e) => setActivate(e.target.checked)}
-            className="h-5 w-5 accent-green-500"
+            className="accent-accent h-5 w-5"
           />
         </label>
 
