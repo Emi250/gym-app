@@ -44,7 +44,7 @@ export function Switch({
       <span
         aria-hidden
         className={cn(
-          "inline-block h-5 w-5 rounded-full bg-fg transition-transform",
+          "inline-block h-5 w-5 rounded-full bg-fg transition-transform duration-150 ease-out",
           checked ? "translate-x-6" : "translate-x-1",
         )}
       />
