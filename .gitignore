@@ -52,3 +52,6 @@ public/workbox-*.js.map
 .claude/
 .vscode/
 .idea/
+
+# Superpowers brainstorm artifacts
+.superpowers/
