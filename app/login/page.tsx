@@ -4,43 +4,51 @@ import { Dumbbell } from "lucide-react";
 import { useState } from "react";
 import { signInWithGoogle } from "@/lib/auth/current-user";
 import { showToast } from "@/lib/toast/toast-store";
+import { BigButton } from "@/components/ui/big-button";
+import { Card } from "@/components/ui/card";
 
 export default function LoginPage() {
   const [busy, setBusy] = useState(false);
   return (
-    <main className="flex min-h-svh flex-col items-center justify-center gap-8 px-6 text-center">
-      <div className="flex flex-col items-center gap-3">
-        <div className="bg-accent/15 text-accent flex h-16 w-16 items-center justify-center rounded-2xl">
-          <Dumbbell className="h-8 w-8" />
-        </div>
-        <h1 className="text-3xl font-bold tracking-tight">Gym Tracker</h1>
-        <p className="text-fg-muted max-w-xs text-sm">
-          Registrá tus entrenamientos y dejá que la app calcule tu sobrecarga progresiva.
-        </p>
-      </div>
-
-      <button
-        type="button"
-        disabled={busy}
-        onClick={async () => {
-          setBusy(true);
-          try {
-            await signInWithGoogle();
-          } catch (err) {
-            console.error(err);
-            showToast("No se pudo iniciar sesión. Reintentá.", "error");
-            setBusy(false);
-          }
-        }}
-        className="bg-bg-elevated border-border flex h-14 w-full max-w-xs items-center justify-center gap-3 rounded-2xl border text-base font-semibold disabled:opacity-50"
+    <main className="flex min-h-svh flex-col items-center justify-center px-6">
+      <Card
+        padding="lg"
+        className="flex w-full max-w-sm flex-col items-center gap-8 text-center"
       >
-        <GoogleLogo />
-        {busy ? "Redirigiendo…" : "Continuar con Google"}
-      </button>
+        <div className="flex flex-col items-center gap-3">
+          <div className="bg-accent/15 text-accent flex h-16 w-16 items-center justify-center rounded-card">
+            <Dumbbell className="h-8 w-8" />
+          </div>
+          <h1 className="text-3xl font-bold tracking-[-0.02em]">Gym Tracker</h1>
+          <p className="text-fg-muted max-w-xs text-sm">
+            Registrá tus entrenamientos y dejá que la app calcule tu sobrecarga progresiva.
+          </p>
+        </div>
 
-      <p className="text-fg-muted max-w-xs text-xs">
-        Tu progreso se guarda en tu cuenta y se sincroniza entre dispositivos.
-      </p>
+        <BigButton
+          type="button"
+          variant="primary"
+          size="lg"
+          disabled={busy}
+          onClick={async () => {
+            setBusy(true);
+            try {
+              await signInWithGoogle();
+            } catch (err) {
+              console.error(err);
+              showToast("No se pudo iniciar sesión. Reintentá.", "error");
+              setBusy(false);
+            }
+          }}
+        >
+          <GoogleLogo />
+          {busy ? "Redirigiendo…" : "Continuar con Google"}
+        </BigButton>
+
+        <p className="text-fg-muted max-w-xs text-xs">
+          Tu progreso se guarda en tu cuenta y se sincroniza entre dispositivos.
+        </p>
+      </Card>
     </main>
   );
 }
