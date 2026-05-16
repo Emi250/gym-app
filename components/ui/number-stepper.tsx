@@ -69,7 +69,7 @@ export function NumberStepper({
       {label ? (
         <span className="text-fg-muted text-xs font-medium uppercase tracking-wide">{label}</span>
       ) : null}
-      <div className="bg-bg-elevated border-border focus-within:ring-2 focus-within:ring-fg/40 flex h-16 min-w-0 items-stretch rounded-2xl border">
+      <div className="bg-bg-elevated border-border focus-within:ring-2 focus-within:ring-accent/40 flex h-16 min-w-0 items-stretch rounded-control border backdrop-blur-sm">
         <button
           type="button"
           onClick={dec}

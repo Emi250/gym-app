@@ -7,7 +7,7 @@ describe("NumberStepper", () => {
   it("shows a focus ring on the container via focus-within", () => {
     const { container } = render(<NumberStepper value={10} onChange={() => {}} />);
     // the bordered container is the div that holds the - input + buttons
-    const box = container.querySelector(".rounded-2xl");
+    const box = container.querySelector(".rounded-control");
     expect(box?.className).toContain("focus-within:ring");
   });
 
