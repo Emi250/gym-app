@@ -3,8 +3,10 @@ import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils/cn";
 
 const iconButtonStyles = cva(
-  "flex shrink-0 items-center justify-center rounded-full text-fg-muted transition-colors " +
-    "hover:bg-bg-elevated hover:text-fg disabled:opacity-30 " +
+  "flex shrink-0 items-center justify-center rounded-full text-fg-muted " +
+    "bg-bg-elevated border border-border backdrop-blur-sm " +
+    "transition-[transform,background-color,color] duration-150 ease-out " +
+    "hover:text-fg hover:bg-bg-elevated-2 active:scale-95 disabled:opacity-30 " +
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/40",
   {
     variants: {
