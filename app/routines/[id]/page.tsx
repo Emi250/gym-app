@@ -244,7 +244,7 @@ function DayEditor({
       <button
         type="button"
         onClick={() => setPickerOpen(true)}
-        className="border-border text-fg-muted hover:text-fg mt-3 flex h-12 w-full items-center justify-center gap-1 rounded-xl border border-dashed text-sm font-medium"
+        className="border-border text-fg-muted hover:text-fg mt-3 flex h-12 w-full items-center justify-center gap-1 rounded-control border border-dashed text-sm font-medium"
       >
         <Plus className="h-4 w-4" /> Agregar ejercicio
       </button>
@@ -296,7 +296,7 @@ function PlannedExerciseRow({
 
   return (
     <>
-    <div className="bg-bg border-border rounded-xl border">
+    <div className="bg-bg-elevated border-border rounded-card border">
       <div className="flex items-center">
         {dragHandle}
         <button
@@ -324,7 +324,7 @@ function PlannedExerciseRow({
 
       {expanded ? (
         <div className="border-border space-y-4 border-t p-4">
-          <label className="bg-bg-elevated border-border flex h-12 items-center justify-between rounded-xl border px-3">
+          <label className="bg-bg-elevated border-border flex h-12 items-center justify-between rounded-control border px-3">
             <span className="text-sm font-medium">
               Peso corporal
               <span className="text-fg-muted ml-2 text-xs font-normal">
@@ -422,7 +422,7 @@ function RestField({ planned }: { planned: LocalPlannedExercise }) {
       : `${seconds}s`;
   return (
     <div className="flex flex-col gap-2">
-      <label className="bg-bg-elevated border-border flex h-12 items-center justify-between rounded-xl border px-3">
+      <label className="bg-bg-elevated border-border flex h-12 items-center justify-between rounded-control border px-3">
         <span className="text-sm font-medium">Timer de descanso (opcional)</span>
         <Switch
           aria-label="Timer de descanso"
@@ -459,7 +459,7 @@ function RirField({ planned }: { planned: LocalPlannedExercise }) {
   const enabled = planned.target_rir != null;
   return (
     <div className="flex flex-col gap-2">
-      <label className="bg-bg-elevated border-border flex h-12 items-center justify-between rounded-xl border px-3">
+      <label className="bg-bg-elevated border-border flex h-12 items-center justify-between rounded-control border px-3">
         <span className="text-sm font-medium">RIR objetivo (opcional)</span>
         <Switch
           aria-label="RIR objetivo"

@@ -63,7 +63,7 @@ export default function SessionDetailPage() {
                     {seSets.map((s) => (
                       <li
                         key={s.id}
-                        className="bg-bg border-border rounded-control flex items-center justify-between border px-3 py-2 text-sm"
+                        className="bg-bg-elevated border-border rounded-control flex items-center justify-between border px-3 py-2 text-sm"
                       >
                         <span className="text-fg-muted">Serie {s.set_number}</span>
                         <span className="font-mono font-medium tabular-nums">
