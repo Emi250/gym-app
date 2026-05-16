@@ -53,13 +53,13 @@ export function SetRow({
       <button
         type="button"
         onClick={() => setEditing(true)}
-        className="bg-bg border-border flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left"
+        className="bg-bg-elevated border-border flex w-full items-center justify-between rounded-control border px-3 py-3 text-left"
       >
         <span className="flex items-center gap-2">
-          <span className="bg-accent/20 text-accent flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold">
+          <span className="bg-accent/20 text-accent flex h-7 w-7 items-center justify-center rounded-full font-mono text-xs font-bold tabular-nums">
             {set_number}
           </span>
-          <span className="font-medium tabular-nums">
+          <span className="font-medium font-mono tabular-nums">
             {existing.weight_kg} kg × {existing.reps}
             {existing.rir != null ? <span className="text-fg-muted"> · RIR {existing.rir}</span> : null}
           </span>
@@ -71,10 +71,10 @@ export function SetRow({
 
   return (
     <>
-    <div className={cn("bg-bg border-border rounded-xl border p-3", editing && "ring-accent/30 ring-1")}>
+    <div className={cn("bg-bg-elevated border-border rounded-control border p-3", editing && "ring-accent/30 ring-1")}>
       <div className="mb-3 flex items-center justify-between">
         <span className="text-fg-muted text-xs font-semibold uppercase tracking-wide">
-          Serie {set_number}
+          Serie <span className="font-mono tabular-nums">{set_number}</span>
         </span>
         {existing ? (
           <button
@@ -137,7 +137,7 @@ export function SetRow({
             setSaving(false);
           }
         }}
-        className="bg-accent text-accent-fg mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl font-semibold disabled:opacity-50"
+        className="bg-accent text-accent-fg mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-control font-semibold disabled:opacity-50"
       >
         <Check className="h-5 w-5" />
         {existing ? "Guardar cambios" : "Guardar serie"}

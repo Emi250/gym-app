@@ -37,7 +37,7 @@ export default function Home() {
         {active ? (
           <Card padding="lg">
             <p className="text-fg-muted text-xs uppercase tracking-wide">Rutina activa</p>
-            <p className="mt-2 text-xl font-semibold">{active.name}</p>
+            <p className="mt-2 text-xl font-semibold tracking-[-0.02em]">{active.name}</p>
             <p className="text-fg-muted mt-1 text-sm">
               {routineDurationLabel(active.started_at) ?? "Sin fecha de inicio"}
             </p>
@@ -64,7 +64,7 @@ export default function Home() {
 
         <section className="grid grid-cols-2 gap-3">
           <Link href="/history">
-            <Card padding="md" className="h-24">
+            <Card padding="md" interactive className="h-24">
               <p className="text-fg-muted text-xs uppercase tracking-wide">Historial</p>
               <p className="mt-2 text-xl font-bold tabular-nums">{sessionCount}</p>
               <p className="text-fg-muted text-xs">
@@ -73,7 +73,7 @@ export default function Home() {
             </Card>
           </Link>
           <Link href="/stats">
-            <Card padding="md" className="flex h-24 flex-col justify-between">
+            <Card padding="md" interactive className="flex h-24 flex-col justify-between">
               <p className="text-fg-muted text-xs uppercase tracking-wide">Stats</p>
               <div className="flex items-center gap-2">
                 <LineChart className="text-accent h-5 w-5" />

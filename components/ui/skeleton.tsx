@@ -8,7 +8,7 @@ export function Skeleton({ className, ...props }: SkeletonProps) {
   return (
     <div
       aria-hidden
-      className={cn("bg-bg-elevated animate-pulse rounded-2xl", className)}
+      className={cn("bg-bg-elevated animate-pulse rounded-card", className)}
       {...props}
     />
   );

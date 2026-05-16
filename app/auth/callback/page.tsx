@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/sync/supabase";
+import { Card } from "@/components/ui/card";
 
 /**
  * Handles the OAuth redirect from Supabase. With PKCE flow, Supabase sends the
@@ -51,25 +52,30 @@ export default function AuthCallbackPage() {
   }, [router]);
 
   return (
-    <main className="flex min-h-svh flex-col items-center justify-center gap-4 px-6 text-center">
-      {error ? (
-        <>
-          <p className="text-danger font-semibold">No se pudo iniciar sesión</p>
-          <p className="text-fg-muted max-w-xs text-sm">{error}</p>
-          <button
-            type="button"
-            onClick={() => router.replace("/login")}
-            className="text-accent text-sm underline"
-          >
-            Volver a intentar
-          </button>
-        </>
-      ) : (
-        <>
-          <div className="border-fg/20 border-t-fg h-8 w-8 animate-spin rounded-full border-2" />
-          <p className="text-fg-muted text-sm">Conectando…</p>
-        </>
-      )}
+    <main className="flex min-h-svh flex-col items-center justify-center px-6">
+      <Card
+        padding="lg"
+        className="flex w-full max-w-sm flex-col items-center gap-4 text-center"
+      >
+        {error ? (
+          <>
+            <p className="text-danger font-semibold">No se pudo iniciar sesión</p>
+            <p className="text-fg-muted max-w-xs text-sm">{error}</p>
+            <button
+              type="button"
+              onClick={() => router.replace("/login")}
+              className="text-accent text-sm underline"
+            >
+              Volver a intentar
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="border-fg/20 border-t-fg h-8 w-8 animate-spin rounded-full border-2" />
+            <p className="text-fg-muted text-sm">Conectando…</p>
+          </>
+        )}
+      </Card>
     </main>
   );
 }

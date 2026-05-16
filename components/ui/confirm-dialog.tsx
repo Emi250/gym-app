@@ -83,7 +83,7 @@ export function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 p-6 backdrop-blur-md animate-fade-in"
       onClick={onCancel}
     >
       <div
@@ -91,7 +91,7 @@ export function ConfirmDialog({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="bg-bg-elevated border-border w-full max-w-sm rounded-3xl border p-5 shadow-overlay"
+        className="bg-bg-elevated border-border w-full max-w-sm rounded-card border p-5 shadow-overlay backdrop-blur-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-lg font-semibold">{title}</h2>

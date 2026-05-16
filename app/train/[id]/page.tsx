@@ -210,9 +210,12 @@ function ExerciseBlock({
   const collapsed = allDone && !expanded;
 
   return (
-    <Card padding="md">
+    <Card
+      padding={collapsed ? "md" : "lg"}
+      className={collapsed ? "opacity-70 transition-opacity" : "transition-opacity"}
+    >
       <header className="mb-3">
-        <h3 className="text-base font-semibold">
+        <h3 className="text-base font-semibold tracking-[-0.02em]">
           {session_exercise.exercise_name}
           {session_exercise.is_bodyweight ? (
             <span className="bg-accent/15 text-accent ml-2 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase">
@@ -220,7 +223,7 @@ function ExerciseBlock({
             </span>
           ) : null}
         </h3>
-        <p className="text-fg-muted text-xs">
+        <p className="text-fg-muted text-xs tabular-nums">
           Objetivo: {session_exercise.target_reps_min}–{session_exercise.target_reps_max} reps ·{" "}
           {formatWeight(session_exercise.target_weight_kg, session_exercise.is_bodyweight)}
           {session_exercise.target_rir != null ? ` · RIR ${session_exercise.target_rir}` : ""}

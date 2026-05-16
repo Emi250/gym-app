@@ -104,7 +104,7 @@ export default function StatsPage() {
                   <Card padding="sm">
                     <div className="flex items-baseline justify-between">
                       <p className="text-sm font-medium">{fmtFullDate(p.finished_at)}</p>
-                      <p className="text-fg-muted text-xs tabular-nums">
+                      <p className="text-fg-muted font-mono text-xs tabular-nums">
                         máx {p.max_weight_kg} kg · vol {p.total_volume.toFixed(0)}
                       </p>
                     </div>
@@ -150,7 +150,7 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
       <p className="text-fg-muted text-[10px] uppercase tracking-wide">{label}</p>
       <p
         className={cn(
-          "mt-0.5 text-lg font-bold tabular-nums",
+          "mt-0.5 font-mono text-lg font-bold tabular-nums",
           accent ? "text-accent" : "",
         )}
       >

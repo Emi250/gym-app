@@ -17,7 +17,7 @@ export function BottomNav() {
   const pathname = usePathname();
   return (
     <nav
-      className="bg-bg-elevated/95 border-border fixed bottom-0 left-0 right-0 z-20 border-t backdrop-blur"
+      className="bg-bg/70 border-border fixed bottom-0 left-0 right-0 z-20 border-t backdrop-blur-lg"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="mx-auto flex max-w-md items-center justify-between px-2">

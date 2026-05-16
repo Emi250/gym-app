@@ -59,11 +59,11 @@ export default function FinishPage() {
     <AppShell title="Sesión terminada">
       <div className="flex flex-col gap-5">
         <Card padding="lg" className="flex items-center gap-3">
-          <div className="bg-accent/15 text-accent flex h-12 w-12 items-center justify-center rounded-xl">
+          <div className="bg-accent/15 text-accent flex h-12 w-12 items-center justify-center rounded-control">
             <PartyPopper className="h-6 w-6" />
           </div>
           <div className="flex-1">
-            <p className="font-semibold">¡Listo!</p>
+            <p className="text-accent text-xl font-semibold tracking-[-0.02em]">¡Listo!</p>
             <p className="text-fg-muted text-xs">{session.session.training_day_name}</p>
           </div>
         </Card>
@@ -125,11 +125,11 @@ function DiffRow({ diff }: { diff: ProgressionDiff }) {
       <Card padding="sm" className="flex items-center justify-between">
         <span>
           <span className="block font-medium">{diff.exercise_name}</span>
-          <span className="text-fg-muted text-xs tabular-nums">
+          <span className="text-fg-muted font-mono text-xs tabular-nums">
             {diff.previous_weight_kg} kg → {diff.next_weight_kg} kg
           </span>
         </span>
-        <span className="flex items-center gap-1 text-sm font-medium tabular-nums">
+        <span className="flex items-center gap-1 font-mono text-sm font-medium tabular-nums">
           {icon}
           {label}
         </span>

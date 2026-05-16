@@ -66,7 +66,7 @@ export function ExercisePicker({ open, onClose, onPick }: ExercisePickerProps) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-30 flex flex-col bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-30 flex flex-col bg-black/70 backdrop-blur-md">
       <div className="bg-bg border-border mt-auto flex max-h-[85vh] flex-col rounded-t-3xl border-t">
         <div className="flex items-center justify-between p-4">
           <h2 className="text-lg font-semibold">Elegir ejercicio</h2>
@@ -81,7 +81,7 @@ export function ExercisePicker({ open, onClose, onPick }: ExercisePickerProps) {
         </div>
 
         <div className="px-4">
-          <div className="bg-bg-elevated border-border flex h-12 items-center gap-2 rounded-2xl border px-3">
+          <div className="bg-bg-elevated border-border flex h-12 items-center gap-2 rounded-control border px-3 backdrop-blur-sm">
             <Search className="text-fg-muted h-4 w-4" />
             <input
               autoFocus
@@ -116,7 +116,7 @@ export function ExercisePicker({ open, onClose, onPick }: ExercisePickerProps) {
                     onPick(e);
                     onClose();
                   }}
-                  className="hover:bg-bg-elevated flex w-full items-center justify-between rounded-xl px-3 py-3 text-left"
+                  className="hover:bg-bg-elevated flex w-full items-center justify-between rounded-control px-3 py-3 text-left transition-colors"
                 >
                   <span>
                     <span className="block font-medium">{e.name}</span>

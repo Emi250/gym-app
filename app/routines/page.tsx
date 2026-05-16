@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { activateRoutine, useRoutines } from "@/lib/db/queries";
 import { showToast } from "@/lib/toast/toast-store";
+import { cn } from "@/lib/utils/cn";
 import { routineDurationLabel } from "@/lib/utils/routine-time";
 import type { LocalRoutine } from "@/lib/db/types";
 
@@ -94,11 +95,18 @@ function RoutineCard({
 }) {
   const duration = routineDurationLabel(routine.started_at);
   return (
-    <Card padding="md" className="flex items-center gap-3">
+    <Card
+      padding="md"
+      interactive
+      className={cn(
+        "flex items-center gap-3",
+        state === "active" && "border-accent/40",
+      )}
+    >
       <ActivateButton routineId={routine.id} active={state === "active"} disabled={state === "archived"} />
       <Link href={`/routines/${routine.id}`} className="flex-1">
         <p className="text-base font-semibold">{routine.name}</p>
-        <p className="text-fg-muted text-xs">
+        <p className="text-fg-muted text-xs tabular-nums">
           {state === "archived" ? (
             <span className="inline-flex items-center gap-1">
               <Archive className="h-3 w-3" /> Archivada
