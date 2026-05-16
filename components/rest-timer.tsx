@@ -71,7 +71,7 @@ export function RestTimer() {
       >
         <div
           className={cn(
-            "bg-bg-elevated border-border pointer-events-auto flex w-full max-w-md items-center gap-3 rounded-2xl border p-3 shadow-2xl",
+            "bg-bg-elevated border-border shadow-card pointer-events-auto flex w-full max-w-md items-center gap-3 rounded-card border p-3 backdrop-blur-lg",
             done && "ring-accent ring-2",
           )}
         >
@@ -98,7 +98,7 @@ export function RestTimer() {
             <p className="text-fg-muted text-[10px] uppercase tracking-wide">
               {done ? "Listo" : "Descanso"}
             </p>
-            <p className="text-2xl font-bold tabular-nums">
+            <p className="font-mono text-2xl font-bold tabular-nums">
               {m}:{s.toString().padStart(2, "0")}
             </p>
           </div>
